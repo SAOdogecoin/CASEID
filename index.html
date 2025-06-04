@@ -460,33 +460,48 @@
                     }
                 }
             });
-
+            
             if (potentialParsedData.length === 0 && rawText.trim().length > 0) {
-                const recordBlocks = rawText.split(/\nView(?:[ \t]*\n|$)/);
-                recordBlocks.forEach(block => {
-                    const trimmedBlock = block.trim();
-                    if (!trimmedBlock) return;
-                    const lines = trimmedBlock.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-                    
-                    if (lines.length > 0) {
-                        const caseIdCandidate = lines[0];
-                        let subjectCandidate = "Subject not found";
-                        if (/^\d+$/.test(caseIdCandidate)) {
-                            if (lines.length >= 3 && lines[2]) {
-                                subjectCandidate = lines[2];
-                            } else if (lines.length === 2 && lines[1]) {
-                                if(!lines[1].match(/^\d{1,2}\/\d{1,2}\/\d{4}/) && 
-                                   !lines[1].match(/GMT[+-]?\d{1,2}/) && 
-                                   !["answered", "pending amazon action", "resolved"].includes(lines[1].toLowerCase())) {
-                                    subjectCandidate = lines[1];
+                const allLines = rawText.split('\n');
+                let currentRecordLines = [];
+                let processingStarted = false; 
+
+                for (const line of allLines) {
+                    const trimmedLine = line.trim();
+
+                    if (trimmedLine.toLowerCase() === 'view') {
+                        if (currentRecordLines.length > 0) {
+                            const caseIdCandidate = currentRecordLines[0];
+                            let subjectCandidate = "Subject not found";
+                            if (/^\d+$/.test(caseIdCandidate)) { 
+                                if (currentRecordLines.length >= 3 && currentRecordLines[2]) {
+                                    subjectCandidate = currentRecordLines[2];
+                                } else if (currentRecordLines.length === 2 && currentRecordLines[1]) {
+                                    if(!currentRecordLines[1].match(/^\d{1,2}\/\d{1,2}\/\d{4}/) && 
+                                       !currentRecordLines[1].match(/GMT[+-]?\d{1,2}/) && 
+                                       !["answered", "pending amazon action", "resolved"].includes(currentRecordLines[1].toLowerCase())) {
+                                        subjectCandidate = currentRecordLines[1];
+                                    }
+                                }
+                                if (!potentialParsedData.some(item => item.id === caseIdCandidate)) {
+                                    potentialParsedData.push({ id: caseIdCandidate, subject: subjectCandidate });
                                 }
                             }
-                            if (!potentialParsedData.some(item => item.id === caseIdCandidate)) {
-                                potentialParsedData.push({ id: caseIdCandidate, subject: subjectCandidate });
-                            }
+                        }
+                        currentRecordLines = [];
+                        processingStarted = true; 
+                        continue;
+                    }
+
+                    if (trimmedLine.length > 0) {
+                        if (!processingStarted && /^\d+$/.test(trimmedLine) && currentRecordLines.length === 0) {
+                            processingStarted = true;
+                            currentRecordLines.push(trimmedLine);
+                        } else if (processingStarted) {
+                            currentRecordLines.push(trimmedLine);
                         }
                     }
-                });
+                }
             }
             
             allParsedData = potentialParsedData;
@@ -505,7 +520,7 @@
         }
 
         function filterTableForDisplay() {
-            let dataToDisplay = allParsedData; 
+            let dataToDisplay = [...allParsedData]; 
             const searchTerm = searchTableInput.value.trim().toLowerCase();
             const selectedSubjectFilter = filterSubjectDropdown.value;
             const shouldHideNoSubject = hideNoSubjectCheckbox.checked;
@@ -571,29 +586,31 @@
         }
         
         function updateRowCount(displayedCount) {
-            const totalAfterInitialFilters = allParsedData.length; 
+            let baseCountForComparison = allParsedData.length;
+            if (hideNoSubjectCheckbox.checked && !autoFilterKeywords.length && !filterSubjectDropdown.value && !searchTableInput.value.trim()) {
+                 // If only "hide no subject" is active, the base for "of X" should be the count *before* this specific filter.
+                 // This is tricky because allParsedData is already filtered by keywords.
+                 // For simplicity, we'll use the current allParsedData.length as the "total" after initial parsing & keywords.
+            }
+
+
             const subjectFilterActive = filterSubjectDropdown.value !== "";
             const searchBoxActive = searchTableInput.value.trim() !== "";
             const hideNoSubjectActive = hideNoSubjectCheckbox.checked;
 
 
-            if (!rawDataInput.value.trim() && totalAfterInitialFilters === 0 && !autoFilterKeywords.length) {
+            if (!rawDataInput.value.trim() && baseCountForComparison === 0 && !autoFilterKeywords.length) {
                  rowCountDisplay.textContent = '';
                  return;
             }
             
             let message = `Displaying ${displayedCount} cases.`;
-
-            let baseCountForComparison = allParsedData.length;
-            if (autoFilterKeywords.length > 0) {
-                // This count is already after keyword filtering.
-            }
             
             if (displayedCount < baseCountForComparison && (subjectFilterActive || searchBoxActive || hideNoSubjectActive)) {
-                 message = `Displaying ${displayedCount} of ${baseCountForComparison} cases (after keyword/other filters).`;
+                 message = `Displaying ${displayedCount} of ${baseCountForComparison} cases (after filters).`;
             } else if (baseCountForComparison > 0 && displayedCount === baseCountForComparison && (subjectFilterActive || searchBoxActive || hideNoSubjectActive || autoFilterKeywords.length > 0) ) {
                  message = `Displaying all ${displayedCount} cases (matching current filters).`;
-            } else if (baseCountForComparison > 0 && displayedCount === baseCountForComparison && autoFilterKeywords.length === 0) {
+            } else if (baseCountForComparison > 0 && displayedCount === baseCountForComparison && autoFilterKeywords.length === 0 && !subjectFilterActive && !searchBoxActive && !hideNoSubjectActive) {
                  message = `Displaying ${displayedCount} cases.`;
             }
 
