@@ -103,11 +103,22 @@
             opacity: 1;
             visibility: visible;
         }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 50; /* Ensure it's above other content */
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            backdrop-filter: blur(10px); /* Glass blur effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+        }
+        .dark .top-bar {
+            background-color: rgba(15, 23, 42, 0.8); /* Semi-transparent dark slate for dark mode */
+        }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col items-center transition-colors duration-300">
 
-    <div class="w-full py-3 px-4 md:px-8 shadow-md flex justify-between items-center bg-white dark:bg-slate-800">
+    <div class="top-bar w-full py-3 px-4 md:px-8 shadow-md flex justify-between items-center">
         <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Amazon Case Parser</h1>
         <button id="darkModeToggle" class="p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800 focus:ring-blue-500" aria-label="Toggle dark mode">
             <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -119,76 +130,96 @@
         </button>
     </div>
 
-    <div class="bg-white dark:bg-slate-800 w-full max-w-4xl rounded-3xl shadow-2xl p-6 md:p-8 space-y-6 mt-8 mb-8">
-        <section class="space-y-4">
-            <div>
-                <label for="rawData" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Paste Case Data:</label>
-                <textarea id="rawData" rows="10" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Paste the entire text from the 'Your Cases and Requests' page here..."></textarea>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <div>
-                    <label for="addKeywordInput" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Add Auto-filter Subject Keyword:</label>
-                    <div class="flex">
-                        <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-l-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Enter keyword">
-                        <button id="addKeywordButton" class="px-4 py-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-r-xl border border-blue-500 dark:border-blue-600 transition-colors">Add</button>
-                    </div>
-                    <div id="keywordsList" class="mt-2 flex flex-wrap">
-                    </div>
+    <div class="w-full max-w-4xl lg:max-w-7xl mx-auto mt-8 mb-8 px-4 lg:px-0">
+        <div class="lg:flex lg:gap-x-8">
+            <!-- Left Column: Inputs and Filters -->
+            <div class="lg:w-1/3 lg:sticky lg:top-24 self-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 md:p-8 space-y-6 mb-8 lg:mb-0">
+                    <section class="space-y-4">
+                        <div>
+                            <label for="rawData" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Paste Case Data:</label>
+                            <textarea id="rawData" rows="10" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Paste the entire text from the 'Your Cases and Requests' page here..."></textarea>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button id="clearDataButton" class="w-full sm:w-auto px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors">Clear Data</button>
+                            <div class="flex items-center mt-2 sm:mt-0 sm:ml-auto">
+                                <input type="checkbox" id="autoClearCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
+                                <label for="autoClearCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Auto-clear after parsing</label>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-y-4 pt-4"> 
+                            <div>
+                                <label for="addKeywordInput" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Add Auto-filter Subject Keyword:</label>
+                                <div class="flex">
+                                    <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-l-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Enter keyword">
+                                    <button id="addKeywordButton" class="px-4 py-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-r-xl border border-blue-500 dark:border-blue-600 transition-colors">Add</button>
+                                </div>
+                                <div id="keywordsList" class="mt-2 flex flex-wrap">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="filterSubjectDropdown" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Filter by Subject:</label>
+                                <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200">
+                                    <option value="">All Subjects</option>
+                                </select>
+                                <div class="mt-2 flex items-center">
+                                    <input type="checkbox" id="enableSubjectGroupingCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
+                                    <label for="enableSubjectGroupingCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Group Subjects by Prefix</label>
+                                </div>
+                                <div class="mt-2 flex items-center">
+                                    <input type="checkbox" id="hideNoSubjectCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
+                                    <label for="hideNoSubjectCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Hide 'Subject not found'</label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-                <div>
-                    <label for="filterSubjectDropdown" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Filter by Subject:</label>
-                    <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200">
-                        <option value="">All Subjects</option>
-                    </select>
-                    <div class="mt-2 flex items-center">
-                        <input type="checkbox" id="enableSubjectGroupingCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
-                        <label for="enableSubjectGroupingCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Group Subjects by Prefix</label>
-                    </div>
-                    <div class="mt-2 flex items-center">
-                        <input type="checkbox" id="hideNoSubjectCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
-                        <label for="hideNoSubjectCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Hide 'Subject not found'</label>
-                    </div>
-                </div>
             </div>
-        </section>
 
-        <section class="space-y-4">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 py-2">
-                <div class="flex items-center gap-x-3 flex-wrap justify-start w-full md:w-auto mb-2 md:mb-0">
-                    <button id="copyDisplayedIdsButton" class="px-4 py-2 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors">Copy Displayed IDs</button>
-                    <div class="flex items-center">
-                        <input type="checkbox" id="enableHyperlinksCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
-                        <label for="enableHyperlinksCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Enable Hyperlinks</label>
-                    </div>
+            <!-- Right Column: Results Table and Controls -->
+            <div class="lg:w-2/3">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-6 md:p-8 space-y-6">
+                    <section class="space-y-4">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4 py-2">
+                            <div class="flex items-center gap-x-3 flex-shrink-0 mb-2 md:mb-0"> 
+                                <button id="copyDisplayedIdsButton" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors">Copy Displayed IDs</button>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="enableHyperlinksCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
+                                    <label for="enableHyperlinksCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Enable Hyperlinks</label>
+                                </div>
+                            </div>
+                            <input type="text" id="searchTable" class="w-full md:flex-grow p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Search subjects or Case IDs...">
+                        </div>
+                        
+                        <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow">
+                            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600 table-fixed-layout">
+                                <thead class="bg-slate-50 dark:bg-slate-700">
+                                    <tr>
+                                        <th scope="col" class="w-1/4 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Case ID</th>
+                                        <th scope="col" class="w-3/4 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider subject-column">Subject</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultsTableBody" class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-600">
+                                    <tr><td colspan="2" class="px-4 py-10 text-center text-slate-500 dark:text-slate-400">Paste data to see results.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p id="rowCount" class="text-sm text-slate-500 dark:text-slate-400 text-right"></p>
+                    </section>
+                     <footer class="text-center text-xs text-slate-400 dark:text-slate-500 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        Offline Tool &copy; 2025
+                    </footer>
                 </div>
-                <input type="text" id="searchTable" class="w-full md:flex-grow p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Search subjects or Case IDs...">
             </div>
-            
-            <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow">
-                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600 table-fixed-layout">
-                    <thead class="bg-slate-50 dark:bg-slate-700">
-                        <tr>
-                            <th scope="col" class="w-1/4 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Case ID</th>
-                            <th scope="col" class="w-3/4 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider subject-column">Subject</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resultsTableBody" class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-600">
-                        <tr><td colspan="2" class="px-4 py-10 text-center text-slate-500 dark:text-slate-400">Paste data to see results.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <p id="rowCount" class="text-sm text-slate-500 dark:text-slate-400 text-right"></p>
-        </section>
-
-        <footer class="text-center text-xs text-slate-400 dark:text-slate-500 pt-4 border-t border-slate-200 dark:border-slate-700">
-            Offline Tool &copy; 2025
-        </footer>
+        </div>
     </div>
     <div id="toastNotification" class="toast"></div>
 
     <script>
         const rawDataInput = document.getElementById('rawData');
+        const clearDataButton = document.getElementById('clearDataButton');
+        const autoClearCheckbox = document.getElementById('autoClearCheckbox');
         const addKeywordInput = document.getElementById('addKeywordInput');
         const addKeywordButton = document.getElementById('addKeywordButton');
         const keywordsListDiv = document.getElementById('keywordsList');
@@ -227,6 +258,7 @@
         const LS_SEARCH_TERM_KEY = 'caseParserSearchTerm';
         const LS_SELECTED_SUBJECT_KEY = 'caseParserSelectedSubject';
         const LS_HIDE_NO_SUBJECT_KEY = 'caseParserHideNoSubject';
+        const LS_AUTO_CLEAR_KEY = 'caseParserAutoClear';
 
 
         function initTheme() {
@@ -265,6 +297,7 @@
             localStorage.setItem(LS_KEYWORDS_KEY, JSON.stringify(autoFilterKeywords));
             localStorage.setItem(LS_SUBJECT_GROUPING_KEY, enableSubjectGroupingCheckbox.checked);
             localStorage.setItem(LS_HIDE_NO_SUBJECT_KEY, hideNoSubjectCheckbox.checked);
+            localStorage.setItem(LS_AUTO_CLEAR_KEY, autoClearCheckbox.checked);
             localStorage.setItem(LS_HYPERLINKS_KEY, enableHyperlinksCheckbox.checked);
             localStorage.setItem(LS_RAW_DATA_KEY, rawDataInput.value);
             localStorage.setItem(LS_SEARCH_TERM_KEY, searchTableInput.value);
@@ -278,6 +311,7 @@
             }
             enableSubjectGroupingCheckbox.checked = localStorage.getItem(LS_SUBJECT_GROUPING_KEY) === 'true';
             hideNoSubjectCheckbox.checked = localStorage.getItem(LS_HIDE_NO_SUBJECT_KEY) === 'true';
+            autoClearCheckbox.checked = localStorage.getItem(LS_AUTO_CLEAR_KEY) === 'true';
             enableHyperlinksCheckbox.checked = localStorage.getItem(LS_HYPERLINKS_KEY) === 'true';
 
             const storedRawData = localStorage.getItem(LS_RAW_DATA_KEY);
@@ -297,6 +331,17 @@
                 toastNotification.classList.remove('show');
             }, 3000);
         }
+        
+        clearDataButton.addEventListener('click', () => {
+            rawDataInput.value = '';
+            allParsedData = [];
+            saveSettings(); // Save the cleared rawData
+            parseAndDisplayData(); // This will update the table to show "Paste data..."
+            showToast("Pasted data cleared.");
+        });
+
+        autoClearCheckbox.addEventListener('change', saveSettings);
+
 
         function renderKeywords() {
             keywordsListDiv.innerHTML = '';
@@ -367,6 +412,7 @@
 
         hideNoSubjectCheckbox.addEventListener('change', () => {
             saveSettings();
+            populateSubjectDropdown(); // Repopulate dropdown based on new filter
             filterTableForDisplay();
         });
 
@@ -400,8 +446,9 @@
         function parseAndDisplayData() {
             const rawText = rawDataInput.value;
             let potentialParsedData = []; 
+            let dataWasPasted = rawText.trim().length > 0;
 
-            if (!rawText.trim()) {
+            if (!dataWasPasted) {
                 allParsedData = [];
                 populateSubjectDropdown(); 
                 filterTableForDisplay(); 
@@ -461,45 +508,55 @@
                 }
             });
             
-            if (potentialParsedData.length === 0 && rawText.trim().length > 0) {
+            if (potentialParsedData.length === 0 && dataWasPasted) {
                 const allLines = rawText.split('\n');
                 let currentRecordLines = [];
-                let processingStarted = false; 
+                let foundActionHeader = false;
 
                 for (const line of allLines) {
                     const trimmedLine = line.trim();
 
+                    if (trimmedLine.toLowerCase() === 'action') {
+                        foundActionHeader = true;
+                        currentRecordLines = []; // Reset for data after "Action"
+                        continue;
+                    }
+
+                    if (!foundActionHeader) continue;
+
+
                     if (trimmedLine.toLowerCase() === 'view') {
                         if (currentRecordLines.length > 0) {
-                            const caseIdCandidate = currentRecordLines[0];
+                            const caseIdCandidate = currentRecordLines[0].split('\t')[0].trim(); // Get first part before tab
                             let subjectCandidate = "Subject not found";
                             if (/^\d+$/.test(caseIdCandidate)) { 
                                 if (currentRecordLines.length >= 3 && currentRecordLines[2]) {
-                                    subjectCandidate = currentRecordLines[2];
+                                     subjectCandidate = currentRecordLines[2].split('\t')[0].trim();
+                                     // If subject is a date, try next line if available
+                                     if (subjectCandidate.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) && currentRecordLines.length >=4 && currentRecordLines[3]){
+                                        subjectCandidate = currentRecordLines[3].split('\t')[0].trim();
+                                     } else if (subjectCandidate.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)) { // If it's a date and no next line for subject
+                                        subjectCandidate = "Subject not found"; // Default if only date found
+                                     }
                                 } else if (currentRecordLines.length === 2 && currentRecordLines[1]) {
-                                    if(!currentRecordLines[1].match(/^\d{1,2}\/\d{1,2}\/\d{4}/) && 
-                                       !currentRecordLines[1].match(/GMT[+-]?\d{1,2}/) && 
-                                       !["answered", "pending amazon action", "resolved"].includes(currentRecordLines[1].toLowerCase())) {
-                                        subjectCandidate = currentRecordLines[1];
+                                    let tempSubject = currentRecordLines[1].split('\t')[0].trim();
+                                    if(!tempSubject.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) && 
+                                       !tempSubject.match(/GMT[+-]?\d{1,2}/) && 
+                                       !["answered", "pending amazon action", "resolved"].includes(tempSubject.toLowerCase())) {
+                                        subjectCandidate = tempSubject;
                                     }
                                 }
-                                if (!potentialParsedData.some(item => item.id === caseIdCandidate)) {
+                                 if (!potentialParsedData.some(item => item.id === caseIdCandidate)) {
                                     potentialParsedData.push({ id: caseIdCandidate, subject: subjectCandidate });
                                 }
                             }
                         }
                         currentRecordLines = [];
-                        processingStarted = true; 
-                        continue;
+                        continue; 
                     }
-
-                    if (trimmedLine.length > 0) {
-                        if (!processingStarted && /^\d+$/.test(trimmedLine) && currentRecordLines.length === 0) {
-                            processingStarted = true;
-                            currentRecordLines.push(trimmedLine);
-                        } else if (processingStarted) {
-                            currentRecordLines.push(trimmedLine);
-                        }
+                    
+                    if (trimmedLine.length > 0 && foundActionHeader) {
+                         currentRecordLines.push(trimmedLine);
                     }
                 }
             }
@@ -515,6 +572,15 @@
             }
             
             allParsedData.sort((a, b) => b.id.localeCompare(a.id)); 
+            
+            if (dataWasPasted && autoClearCheckbox.checked && allParsedData.length > 0) {
+                rawDataInput.value = '';
+                // Do not save settings here, as rawDataInput.oninput handles it.
+                // However, if the user expects the cleared rawData to be saved immediately for persistence
+                // even if they don't type anything else, then saveSettings() could be called.
+                // For now, assuming the main save on input is sufficient.
+            }
+
             populateSubjectDropdown(); 
             filterTableForDisplay(); 
         }
@@ -587,17 +653,9 @@
         
         function updateRowCount(displayedCount) {
             let baseCountForComparison = allParsedData.length;
-            if (hideNoSubjectCheckbox.checked && !autoFilterKeywords.length && !filterSubjectDropdown.value && !searchTableInput.value.trim()) {
-                 // If only "hide no subject" is active, the base for "of X" should be the count *before* this specific filter.
-                 // This is tricky because allParsedData is already filtered by keywords.
-                 // For simplicity, we'll use the current allParsedData.length as the "total" after initial parsing & keywords.
-            }
-
-
             const subjectFilterActive = filterSubjectDropdown.value !== "";
             const searchBoxActive = searchTableInput.value.trim() !== "";
             const hideNoSubjectActive = hideNoSubjectCheckbox.checked;
-
 
             if (!rawDataInput.value.trim() && baseCountForComparison === 0 && !autoFilterKeywords.length) {
                  rowCountDisplay.textContent = '';
@@ -613,8 +671,6 @@
             } else if (baseCountForComparison > 0 && displayedCount === baseCountForComparison && autoFilterKeywords.length === 0 && !subjectFilterActive && !searchBoxActive && !hideNoSubjectActive) {
                  message = `Displaying ${displayedCount} cases.`;
             }
-
-
             rowCountDisplay.textContent = message;
         }
         
