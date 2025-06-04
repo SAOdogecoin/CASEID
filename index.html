@@ -4,7 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Case Parser</title>
+
+    <!-- 1. Initial theme script (MOVED HERE - BEFORE TAILWIND CDN) -->
+    <script>
+        // Initialize theme based on localStorage.
+        // This script runs as early as possible to set the 'dark' class on <html>
+        // before Tailwind CSS processes the page, preventing FOUC (Flash Of Unstyled Content).
+        (function() {
+            let currentTheme = localStorage.getItem('theme');
+            
+            // If no theme is stored, or if it's an invalid value, default to 'light'.
+            if (currentTheme !== 'dark' && currentTheme !== 'light') {
+                currentTheme = 'light';
+                localStorage.setItem('theme', currentTheme); // Persist the default.
+            }
+
+            if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            // If currentTheme is 'light', no class needs to be added or removed initially,
+            // as the <html> tag starts with class="".
+        })();
+    </script>
+
+    <!-- 2. Tailwind CDN (Now AFTER initial theme script) -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 3. Custom Styles -->
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -159,20 +185,6 @@
         }
 
     </style>
-    <script>
-        // Initialize theme based on localStorage, or default to 'light'
-        // This script runs early to prevent FOUC (Flash Of Unstyled Content)
-        (function() {
-            let currentTheme = localStorage.getItem('theme') || 'light'; // Default to light
-            if (currentTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-                // Ensure 'light' is stored if nothing was there or if it was something else
-                localStorage.setItem('theme', 'light'); 
-            }
-        })();
-    </script>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col items-center transition-colors duration-300">
 
@@ -251,7 +263,7 @@
         </section>
 
         <footer class="text-center text-xs text-slate-400 dark:text-slate-500 pt-4 border-t border-slate-200 dark:border-slate-700">
-            Offline Tool &copy; 2025
+            Offline Tool © 2025
         </footer>
     </div>
     <div id="toastNotification" class="toast"></div>
@@ -310,6 +322,8 @@
         });
         
         // Initialize dark mode state and icon on load
+        // This call is AFTER the initial theme script in <head> has already run.
+        // So, document.documentElement.classList.contains('dark') will be accurate.
         updateDarkModeToggleIcon(document.documentElement.classList.contains('dark'));
 
 
@@ -330,7 +344,7 @@
                 tag.className = 'keyword-tag';
                 tag.textContent = keyword;
                 const deleteButton = document.createElement('button');
-                deleteButton.innerHTML = '&times;';
+                deleteButton.innerHTML = '×';
                 deleteButton.setAttribute('aria-label', `Remove keyword ${keyword}`);
                 deleteButton.onclick = () => {
                     autoFilterKeywords.splice(index, 1);
@@ -413,11 +427,10 @@
                 filterSubjectDropdown.appendChild(option);
             });
 
-            // Try to restore previous selection if it still exists or makes sense
             if (subjectsForDropdown.includes(currentVal)) {
                  filterSubjectDropdown.value = currentVal;
             } else {
-                 filterSubjectDropdown.value = ""; // Default to "All Subjects"
+                 filterSubjectDropdown.value = ""; 
             }
         }
 
@@ -441,9 +454,6 @@
                 const caseId = idMatch ? idMatch[1] : null;
                 if (!caseId) return;
                 
-                // Attempt to find subject after email-like pattern OR after "View Case" and date/time patterns
-                // This regex tries to find an email, then captures what's after it.
-                // Or, if no email, it tries to find the subject after typical date/status lines.
                 let subject = "";
                 const emailAndSubjectRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}\s*(?:\t|\n)*(.*)/s;
                 let subjectMatch = trimmedRecord.match(emailAndSubjectRegex);
@@ -451,35 +461,28 @@
                 if (subjectMatch && subjectMatch[1]) {
                     subject = subjectMatch[1].trim();
                 } else {
-                    // Fallback: Look for subject after date/time and status lines
-                    // This is a bit fragile and depends on consistent formatting from Amazon
                     const lines = trimmedRecord.split('\n');
-                    // Assuming subject is often after lines containing date, status, or case ID itself.
-                    // A common pattern is: Date, Status, Case ID, then Subject
-                    // Let's try to find the line that is NOT date, status, "Answered", "Pending", etc.
                     let potentialSubjectLine = "";
                     for(let i = 0; i < lines.length; i++) {
                         const line = lines[i].trim();
-                        if (line.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) || // Date like 12/31/2024
-                            line.match(/GMT[+-]\d{1,2}/) || // Timezone
+                        if (line.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) || 
+                            line.match(/GMT[+-]\d{1,2}/) || 
                             line.toLowerCase().includes("answered") ||
                             line.toLowerCase().includes("pending amazon action") ||
                             line.toLowerCase().includes("resolved") ||
-                            line === caseId || // if the case ID itself is on a line
+                            line === caseId || 
                             line.toLowerCase().startsWith("view case") ||
                             line.length === 0 ) {
                             continue;
                         }
-                        // If we are past the ID match and it's not a common status/date, it could be the subject
                         if (idMatch && lines.slice(0,i).join("\n").includes(caseId)){
-                             potentialSubjectLine = lines.slice(i).join(" ").trim(); // Take rest as potential subject
+                             potentialSubjectLine = lines.slice(i).join(" ").trim(); 
                              break;
                         }
                     }
-                     subject = potentialSubjectLine || "Subject not found"; // Fallback if no better logic
+                     subject = potentialSubjectLine || "Subject not found"; 
                 }
                 
-                // Remove "View Case" if it was captured as part of the subject
                 subject = subject.replace(/View Case$/i, "").trim();
 
 
@@ -500,15 +503,13 @@
 
         function filterTableForDisplay() {
             const searchTerm = searchTableInput.value.trim().toLowerCase();
-            const selectedSubjectFilter = filterSubjectDropdown.value; // This is the raw value from dropdown (can be grouped or full)
+            const selectedSubjectFilter = filterSubjectDropdown.value; 
             let dataToDisplay = allParsedData;
 
-            // Apply subject dropdown filter
             if (selectedSubjectFilter) {
                 dataToDisplay = dataToDisplay.filter(item => getProcessedSubject(item.subject) === selectedSubjectFilter);
             }
 
-            // Apply search term filter
             if (searchTerm) {
                 dataToDisplay = dataToDisplay.filter(item => 
                     item.subject.toLowerCase().includes(searchTerm) ||
@@ -542,7 +543,7 @@
                         link.href = CASE_URL_PREFIX + item.id;
                         link.textContent = item.id;
                         link.target = "_blank";
-                        link.rel = "noopener noreferrer"; // Security best practice
+                        link.rel = "noopener noreferrer"; 
                         link.classList.add('text-blue-600', 'dark:text-blue-400', 'hover:text-blue-800', 'dark:hover:text-blue-300', 'hover:underline');
                         tdId.appendChild(link);
                     } else {
@@ -575,7 +576,6 @@
             let message = `Displaying ${displayedCount} cases.`;
 
             if (totalParsed > 0 && (subjectFilterActive || keywordFilterActive || searchBoxActive) && displayedCount < totalParsed) {
-                // Calculate count before search box filter but after keyword and subject dropdown filters
                 let countAfterDropdownAndKeywords = allParsedData.filter(item => {
                     const keywordMatch = keywordFilterActive ? autoFilterKeywords.map(k=>k.toLowerCase()).some(k => item.subject.toLowerCase().includes(k)) : true;
                     const subjectMatch = subjectFilterActive ? getProcessedSubject(item.subject) === filterSubjectDropdown.value : true;
@@ -591,13 +591,12 @@
             rowCountDisplay.textContent = message;
         }
         
-        // Action Buttons
         copyDisplayedIdsButton.addEventListener('click', () => {
             const idsToCopy = [];
             const rows = resultsTableBody.querySelectorAll('tr');
             rows.forEach(row => {
                 const idCell = row.querySelector('td:first-child');
-                if (idCell && idCell.textContent.trim() !== "") { // Ensure it's not an empty/message row
+                if (idCell && idCell.textContent.trim() !== "") { 
                     const link = idCell.querySelector('a');
                     idsToCopy.push(link ? link.textContent : idCell.textContent);
                 }
