@@ -1,36 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" class=""> <!-- JS will manage 'dark' class -->
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Case Parser</title>
-
-    <!-- 1. Initial theme script (MOVED HERE - BEFORE TAILWIND CDN) -->
-    <script>
-        // Initialize theme based on localStorage.
-        // This script runs as early as possible to set the 'dark' class on <html>
-        // before Tailwind CSS processes the page, preventing FOUC (Flash Of Unstyled Content).
-        (function() {
-            let currentTheme = localStorage.getItem('theme');
-            
-            // If no theme is stored, or if it's an invalid value, default to 'light'.
-            if (currentTheme !== 'dark' && currentTheme !== 'light') {
-                currentTheme = 'light';
-                localStorage.setItem('theme', currentTheme); // Persist the default.
-            }
-
-            if (currentTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
-            // If currentTheme is 'light', no class needs to be added or removed initially,
-            // as the <html> tag starts with class="".
-        })();
-    </script>
-
-    <!-- 2. Tailwind CDN (Now AFTER initial theme script) -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- 3. Custom Styles -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -41,46 +20,38 @@
         .subject-column {
             word-break: break-word;
         }
-        /* Custom scrollbar - Light Mode */
+        
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f1f1; /* slate-100 or lighter */
+            background: #f1f1f1;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; /* slate-300 */
+            background: #cbd5e1;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; /* slate-400 */
+            background: #94a3b8;
         }
 
-        /* Custom scrollbar - Dark Mode */
         .dark ::-webkit-scrollbar-track {
-            background: #0f172a; /* slate-900 or darker */
+            background: #0f172a;
         }
         .dark ::-webkit-scrollbar-thumb {
-            background: #334155; /* slate-700 */
+            background: #334155;
         }
         .dark ::-webkit-scrollbar-thumb:hover {
-            background: #475569; /* slate-600 */
-        }
-
-        .top-bar {
-            background-color: #ffffff; /* White */
-        }
-        .dark .top-bar {
-            background-color: #1e293b; /* slate-800 for dark mode */
+            background: #475569;
         }
 
         .keyword-tag {
-            background-color: #e2e8f0; /* slate-200 */
-            color: #334155; /* slate-700 */
+            background-color: #e2e8f0;
+            color: #334155;
             padding: 0.25rem 0.75rem;
-            border-radius: 9999px; /* pill shape */
+            border-radius: 9999px;
             font-size: 0.875rem;
             margin-right: 0.5rem;
             margin-bottom: 0.5rem;
@@ -88,67 +59,25 @@
             align-items: center;
         }
         .dark .keyword-tag {
-            background-color: #475569; /* slate-600 */
-            color: #e2e8f0; /* slate-200 */
+            background-color: #475569;
+            color: #e2e8f0;
         }
         .keyword-tag button {
             margin-left: 0.5rem;
-            color: #64748b; /* slate-500 */
+            color: #64748b;
             background: none;
             border: none;
             cursor: pointer;
             font-weight: bold;
         }
         .dark .keyword-tag button {
-            color: #94a3b8; /* slate-400 */
+            color: #94a3b8;
         }
         .keyword-tag button:hover {
-            color: #1e293b; /* slate-800 */
+            color: #1e293b;
         }
         .dark .keyword-tag button:hover {
-            color: #cbd5e1; /* slate-300 */
-        }
-
-        .action-button {
-            background-color: #ffffff; /* white */
-            color: #3b82f6; /* blue-500 */
-            border: 1px solid #cbd5e1; /* slate-300 */
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem; /* rounded-md */
-            font-weight: 500;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .action-button:hover {
-            background-color: #f8fafc; /* slate-50 */
-            border-color: #94a3b8; /* slate-400 */
-        }
-        .dark .action-button {
-            background-color: #334155; /* slate-700 */
-            color: #60a5fa; /* blue-400 */
-            border-color: #475569; /* slate-600 */
-        }
-        .dark .action-button:hover {
-            background-color: #475569; /* slate-600 */
-            border-color: #64748b; /* slate-500 */
-        }
-        
-        .secondary-action-button { 
-             background-color: #ffffff;
-             color: #3b82f6; 
-             border: 1px solid #cbd5e1; 
-        }
-        .secondary-action-button:hover {
-             background-color: #f8fafc; 
-             border-color: #94a3b8; 
-        }
-         .dark .secondary-action-button {
-            background-color: #334155; 
-            color: #60a5fa; 
-            border-color: #475569; 
-        }
-        .dark .secondary-action-button:hover {
-            background-color: #475569; 
-            border-color: #64748b; 
+            color: #cbd5e1;
         }
 
         .toast {
@@ -156,7 +85,7 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #1e293b; /* slate-800 */
+            background-color: #1e293b;
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
@@ -167,36 +96,30 @@
             visibility: hidden;
         }
         .dark .toast {
-            background-color: #e2e8f0; /* slate-200 */
-            color: #1e293b; /* slate-800 */
+            background-color: #e2e8f0;
+            color: #1e293b;
         }
         .toast.show {
             opacity: 1;
             visibility: visible;
         }
-        .toggle-checkbox:checked + .toggle-label .toggle-dot {
-            transform: translateX(100%);
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #3b82f6; /* blue-500 */
-        }
-        .dark .toggle-checkbox:checked + .toggle-label {
-            background-color: #60a5fa; /* blue-400 */
-        }
-
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col items-center transition-colors duration-300">
 
-    <div class="top-bar w-full py-3 px-4 md:px-8 shadow-md flex justify-between items-center">
+    <div class="w-full py-3 px-4 md:px-8 shadow-md flex justify-between items-center bg-white dark:bg-slate-800">
         <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Amazon Case Parser</h1>
         <button id="darkModeToggle" class="p-2 rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800 focus:ring-blue-500" aria-label="Toggle dark mode">
-            <!-- SVG icon will be injected here by JS -->
+            <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-15.66l-.707.707M4.04 19.96l-.707.707M21 12h-1M4 12H3m15.66 8.66l-.707-.707M4.747 4.747l-.707-.707M12 5.5A6.5 6.5 0 1018.5 12 6.507 6.507 0 0012 5.5z" />
+            </svg>
+            <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
         </button>
     </div>
 
     <div class="bg-white dark:bg-slate-800 w-full max-w-5xl rounded-xl shadow-2xl p-6 md:p-8 space-y-6 mt-8 mb-8">
-        <!-- Input Section -->
         <section class="space-y-4">
             <div>
                 <label for="rawData" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Paste Case Data:</label>
@@ -208,17 +131,15 @@
                     <label for="addKeywordInput" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Add Auto-filter Subject Keyword:</label>
                     <div class="flex">
                         <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-l-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Enter keyword">
-                        <button id="addKeywordButton" class="action-button rounded-l-none rounded-r-lg px-4">Add</button>
+                        <button id="addKeywordButton" class="px-4 py-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-r-lg border border-blue-500 dark:border-blue-600 transition-colors">Add</button>
                     </div>
                     <div id="keywordsList" class="mt-2">
-                        <!-- Keywords will be displayed here -->
                     </div>
                 </div>
                 <div>
                     <label for="filterSubjectDropdown" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Filter by Subject:</label>
                     <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200">
                         <option value="">All Subjects</option>
-                        <!-- Subjects will be populated here -->
                     </select>
                     <div class="mt-2 flex items-center">
                         <input type="checkbox" id="enableSubjectGroupingCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
@@ -228,18 +149,15 @@
             </div>
         </section>
 
-        <!-- Actions & Options Section -->
         <section class="space-y-3 md:space-y-0 md:flex md:flex-wrap md:items-center md:justify-start md:gap-4 py-2">
-            <button id="copyDisplayedIdsButton" class="action-button w-full md:w-auto mb-2 md:mb-0">Copy Displayed IDs</button>
-            <button id="openAllDisplayedIdsButton" class="action-button secondary-action-button w-full md:w-auto mb-2 md:mb-0">Open All Displayed IDs</button>
+            <button id="copyDisplayedIdsButton" class="px-4 py-2 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors w-full md:w-auto mb-2 md:mb-0">Copy Displayed IDs</button>
+            <button id="openAllDisplayedIdsButton" class="px-4 py-2 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors w-full md:w-auto mb-2 md:mb-0">Open All Displayed IDs</button>
             <div class="flex items-center w-full md:w-auto">
                 <input type="checkbox" id="enableHyperlinksCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
                 <label for="enableHyperlinksCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Enable Case ID Hyperlinks</label>
             </div>
         </section>
 
-
-        <!-- Results Section -->
         <section class="space-y-4">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200">Parsed Cases</h2>
@@ -263,13 +181,12 @@
         </section>
 
         <footer class="text-center text-xs text-slate-400 dark:text-slate-500 pt-4 border-t border-slate-200 dark:border-slate-700">
-            Offline Tool © 2025
+            Offline Tool &copy; 2025
         </footer>
     </div>
     <div id="toastNotification" class="toast"></div>
 
     <script>
-        // DOM Elements
         const rawDataInput = document.getElementById('rawData');
         const addKeywordInput = document.getElementById('addKeywordInput');
         const addKeywordButton = document.getElementById('addKeywordButton');
@@ -285,49 +202,35 @@
         const toastNotification = document.getElementById('toastNotification');
         const darkModeToggleButton = document.getElementById('darkModeToggle');
 
-        // App State
         let allParsedData = []; 
         let autoFilterKeywords = [];
         const CASE_URL_PREFIX = "https://sellercentral.amazon.com/cu/case-dashboard/view-case?ref=sc_cd_lobby_vc_v3&ie=UTF&caseID=";
 
-        // SVG Icons for Dark Mode Toggle
-        const sunIcon = `
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-15.66l-.707.707M4.04 19.96l-.707.707M21 12h-1M4 12H3m15.66 8.66l-.707-.707M4.747 4.747l-.707-.707M12 5.5A6.5 6.5 0 1018.5 12 6.507 6.507 0 0012 5.5z" />
-            </svg>`;
-        const moonIcon = `
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>`;
-
-        // Dark Mode Logic
-        function updateDarkModeToggleIcon(isDark) {
-            darkModeToggleButton.innerHTML = isDark ? sunIcon : moonIcon;
-            darkModeToggleButton.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-        }
-
-        function setDarkMode(isDark) {
-            if (isDark) {
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
                 document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
             } else {
                 document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
             }
-            updateDarkModeToggleIcon(isDark);
         }
 
-        darkModeToggleButton.addEventListener('click', () => {
-            setDarkMode(!document.documentElement.classList.contains('dark'));
-        });
-        
-        // Initialize dark mode state and icon on load
-        // This call is AFTER the initial theme script in <head> has already run.
-        // So, document.documentElement.classList.contains('dark') will be accurate.
-        updateDarkModeToggleIcon(document.documentElement.classList.contains('dark'));
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
 
+        darkModeToggleButton.addEventListener('click', toggleTheme);
 
-        // Toast Notifications
         function showToast(message) {
             toastNotification.textContent = message;
             toastNotification.classList.add('show');
@@ -336,7 +239,6 @@
             }, 3000);
         }
 
-        // Keyword Management
         function renderKeywords() {
             keywordsListDiv.innerHTML = '';
             autoFilterKeywords.forEach((keyword, index) => {
@@ -344,7 +246,7 @@
                 tag.className = 'keyword-tag';
                 tag.textContent = keyword;
                 const deleteButton = document.createElement('button');
-                deleteButton.innerHTML = '×';
+                deleteButton.innerHTML = '&times;';
                 deleteButton.setAttribute('aria-label', `Remove keyword ${keyword}`);
                 deleteButton.onclick = () => {
                     autoFilterKeywords.splice(index, 1);
@@ -359,7 +261,7 @@
         addKeywordButton.addEventListener('click', () => {
             const keyword = addKeywordInput.value.trim();
             if (keyword && !autoFilterKeywords.some(k => k.toLowerCase() === keyword.toLowerCase())) {
-                autoFilterKeywords.push(keyword); // Store with original casing for display, compare lowercase
+                autoFilterKeywords.push(keyword);
                 renderKeywords();
                 parseAndDisplayData(); 
                 addKeywordInput.value = '';
@@ -373,12 +275,11 @@
             }
         });
 
-        // Subject Grouping Logic
         const subjectMarkers = [
             "Reference ID:", 
             "Shipment ID:", 
             "FBA Reimbursement Notification - Case ID",
-            "FBA Inbound Performance problem investigation - Shipment ID", // More specific first
+            "FBA Inbound Performance problem investigation - Shipment ID",
             "Amazon-initiated transaction - ",
             "FBA return claim notification for Order ID",
             "Investigation of Negative Seller Feedback - Order ID",
@@ -400,12 +301,11 @@
             
             const problemIndex = subjectLower.indexOf("problem:");
             if (problemIndex !== -1) {
-                 // Check if this "problem:" is part of a longer known marker, if so, it's handled above.
                 if (!subjectMarkers.some(m => m.toLowerCase().includes("problem:") && subjectLower.includes(m.toLowerCase()))) {
                     return subject.substring(0, problemIndex).trim();
                 }
             }
-            return subject.trim(); // No specific grouping found, return original trimmed
+            return subject.trim();
         }
         
         enableSubjectGroupingCheckbox.addEventListener('change', () => {
@@ -413,8 +313,6 @@
             filterTableForDisplay();
         });
 
-
-        // Data Parsing and Display
         function populateSubjectDropdown() {
             const currentVal = filterSubjectDropdown.value;
             const subjectsForDropdown = [...new Set(allParsedData.map(item => getProcessedSubject(item.subject)).filter(s => s))].sort();
@@ -430,7 +328,7 @@
             if (subjectsForDropdown.includes(currentVal)) {
                  filterSubjectDropdown.value = currentVal;
             } else {
-                 filterSubjectDropdown.value = ""; 
+                 filterSubjectDropdown.value = "";
             }
         }
 
@@ -465,26 +363,25 @@
                     let potentialSubjectLine = "";
                     for(let i = 0; i < lines.length; i++) {
                         const line = lines[i].trim();
-                        if (line.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) || 
-                            line.match(/GMT[+-]\d{1,2}/) || 
+                        if (line.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) ||
+                            line.match(/GMT[+-]\d{1,2}/) ||
                             line.toLowerCase().includes("answered") ||
                             line.toLowerCase().includes("pending amazon action") ||
                             line.toLowerCase().includes("resolved") ||
-                            line === caseId || 
+                            line === caseId ||
                             line.toLowerCase().startsWith("view case") ||
                             line.length === 0 ) {
                             continue;
                         }
                         if (idMatch && lines.slice(0,i).join("\n").includes(caseId)){
-                             potentialSubjectLine = lines.slice(i).join(" ").trim(); 
+                             potentialSubjectLine = lines.slice(i).join(" ").trim();
                              break;
                         }
                     }
-                     subject = potentialSubjectLine || "Subject not found"; 
+                     subject = potentialSubjectLine || "Subject not found";
                 }
                 
                 subject = subject.replace(/View Case$/i, "").trim();
-
 
                 if (autoFilterKeywords.length > 0) {
                     const subjectLower = subject.toLowerCase();
@@ -503,7 +400,7 @@
 
         function filterTableForDisplay() {
             const searchTerm = searchTableInput.value.trim().toLowerCase();
-            const selectedSubjectFilter = filterSubjectDropdown.value; 
+            const selectedSubjectFilter = filterSubjectDropdown.value;
             let dataToDisplay = allParsedData;
 
             if (selectedSubjectFilter) {
@@ -543,7 +440,7 @@
                         link.href = CASE_URL_PREFIX + item.id;
                         link.textContent = item.id;
                         link.target = "_blank";
-                        link.rel = "noopener noreferrer"; 
+                        link.rel = "noopener noreferrer";
                         link.classList.add('text-blue-600', 'dark:text-blue-400', 'hover:text-blue-800', 'dark:hover:text-blue-300', 'hover:underline');
                         tdId.appendChild(link);
                     } else {
@@ -596,7 +493,7 @@
             const rows = resultsTableBody.querySelectorAll('tr');
             rows.forEach(row => {
                 const idCell = row.querySelector('td:first-child');
-                if (idCell && idCell.textContent.trim() !== "") { 
+                if (idCell && idCell.textContent.trim() !== "") {
                     const link = idCell.querySelector('a');
                     idsToCopy.push(link ? link.textContent : idCell.textContent);
                 }
@@ -663,15 +560,13 @@
             }
         });
 
-        // Event Listeners
         rawDataInput.addEventListener('input', parseAndDisplayData);
         filterSubjectDropdown.addEventListener('change', filterTableForDisplay);
         searchTableInput.addEventListener('input', filterTableForDisplay);
 
-        // Initial setup
+        initTheme();
         parseAndDisplayData();
         renderKeywords();
-
     </script>
 </body>
 </html>
