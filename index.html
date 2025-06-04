@@ -206,30 +206,79 @@
         let autoFilterKeywords = [];
         const CASE_URL_PREFIX = "https://sellercentral.amazon.com/cu/case-dashboard/view-case?ref=sc_cd_lobby_vc_v3&ie=UTF&caseID=";
 
+        // localStorage keys
+        const LS_THEME_KEY = 'caseParserTheme';
+        const LS_KEYWORDS_KEY = 'caseParserKeywords';
+        const LS_SUBJECT_GROUPING_KEY = 'caseParserSubjectGrouping';
+        const LS_HYPERLINKS_KEY = 'caseParserHyperlinks';
+        const LS_RAW_DATA_KEY = 'caseParserRawData';
+        const LS_SEARCH_TERM_KEY = 'caseParserSearchTerm';
+        const LS_SELECTED_SUBJECT_KEY = 'caseParserSelectedSubject';
+
+
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            const savedTheme = localStorage.getItem(LS_THEME_KEY);
+            if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
-            } else {
+            } else { // Default to light if no theme saved or if saved as light
                 document.documentElement.classList.remove('dark');
+                 if (!savedTheme) { // If it was never set, default to light and store it
+                    localStorage.setItem(LS_THEME_KEY, 'light');
+                }
             }
+            updateThemeIcons();
+        }
+
+        function updateThemeIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('sunIcon').classList.toggle('hidden', !isDark);
+            document.getElementById('moonIcon').classList.toggle('hidden', isDark);
         }
 
         function toggleTheme() {
             const isDark = document.documentElement.classList.contains('dark');
-            
             if (isDark) {
                 document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
+                localStorage.setItem(LS_THEME_KEY, 'light');
             } else {
                 document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
+                localStorage.setItem(LS_THEME_KEY, 'dark');
             }
+            updateThemeIcons();
         }
 
         darkModeToggleButton.addEventListener('click', toggleTheme);
+
+        function saveSettings() {
+            localStorage.setItem(LS_KEYWORDS_KEY, JSON.stringify(autoFilterKeywords));
+            localStorage.setItem(LS_SUBJECT_GROUPING_KEY, enableSubjectGroupingCheckbox.checked);
+            localStorage.setItem(LS_HYPERLINKS_KEY, enableHyperlinksCheckbox.checked);
+            localStorage.setItem(LS_RAW_DATA_KEY, rawDataInput.value);
+            localStorage.setItem(LS_SEARCH_TERM_KEY, searchTableInput.value);
+            localStorage.setItem(LS_SELECTED_SUBJECT_KEY, filterSubjectDropdown.value);
+        }
+
+        function loadSettings() {
+            const storedKeywords = localStorage.getItem(LS_KEYWORDS_KEY);
+            if (storedKeywords) {
+                autoFilterKeywords = JSON.parse(storedKeywords);
+            }
+
+            enableSubjectGroupingCheckbox.checked = localStorage.getItem(LS_SUBJECT_GROUPING_KEY) === 'true';
+            enableHyperlinksCheckbox.checked = localStorage.getItem(LS_HYPERLINKS_KEY) === 'true';
+
+            const storedRawData = localStorage.getItem(LS_RAW_DATA_KEY);
+            if (storedRawData) {
+                rawDataInput.value = storedRawData;
+            }
+
+            const storedSearchTerm = localStorage.getItem(LS_SEARCH_TERM_KEY);
+            if (storedSearchTerm) {
+                searchTableInput.value = storedSearchTerm;
+            }
+            // Selected subject will be handled by populateSubjectDropdown
+        }
+
 
         function showToast(message) {
             toastNotification.textContent = message;
@@ -251,6 +300,7 @@
                 deleteButton.onclick = () => {
                     autoFilterKeywords.splice(index, 1);
                     renderKeywords();
+                    saveSettings();
                     parseAndDisplayData(); 
                 };
                 tag.appendChild(deleteButton);
@@ -263,6 +313,7 @@
             if (keyword && !autoFilterKeywords.some(k => k.toLowerCase() === keyword.toLowerCase())) {
                 autoFilterKeywords.push(keyword);
                 renderKeywords();
+                saveSettings();
                 parseAndDisplayData(); 
                 addKeywordInput.value = '';
             } else if (autoFilterKeywords.some(k => k.toLowerCase() === keyword.toLowerCase())) {
@@ -309,12 +360,13 @@
         }
         
         enableSubjectGroupingCheckbox.addEventListener('change', () => {
-            populateSubjectDropdown();
-            filterTableForDisplay();
+            saveSettings();
+            populateSubjectDropdown(); // Repopulate with potentially different grouping
+            filterTableForDisplay(); // Re-filter based on new grouping and selection
         });
 
         function populateSubjectDropdown() {
-            const currentVal = filterSubjectDropdown.value;
+            const previouslySelectedSubject = localStorage.getItem(LS_SELECTED_SUBJECT_KEY) || filterSubjectDropdown.value;
             const subjectsForDropdown = [...new Set(allParsedData.map(item => getProcessedSubject(item.subject)).filter(s => s))].sort();
             
             filterSubjectDropdown.innerHTML = '<option value="">All Subjects</option>'; 
@@ -325,10 +377,15 @@
                 filterSubjectDropdown.appendChild(option);
             });
 
-            if (subjectsForDropdown.includes(currentVal)) {
-                 filterSubjectDropdown.value = currentVal;
+            // Try to restore previous selection
+            if (subjectsForDropdown.includes(previouslySelectedSubject)) {
+                 filterSubjectDropdown.value = previouslySelectedSubject;
             } else {
-                 filterSubjectDropdown.value = "";
+                 filterSubjectDropdown.value = ""; // Default to "All Subjects" if previous not found
+                 // Optionally clear the stale stored value if it's no longer valid
+                 if (localStorage.getItem(LS_SELECTED_SUBJECT_KEY) && localStorage.getItem(LS_SELECTED_SUBJECT_KEY) !== previouslySelectedSubject) {
+                    localStorage.setItem(LS_SELECTED_SUBJECT_KEY, "");
+                 }
             }
         }
 
@@ -337,8 +394,8 @@
             allParsedData = []; 
 
             if (!rawText.trim()) {
-                filterTableForDisplay(); 
                 populateSubjectDropdown(); 
+                filterTableForDisplay(); 
                 return;
             }
 
@@ -383,6 +440,7 @@
                 
                 subject = subject.replace(/View Case$/i, "").trim();
 
+                // Auto-filter keywords are applied here during initial parsing
                 if (autoFilterKeywords.length > 0) {
                     const subjectLower = subject.toLowerCase();
                     const keywordsLower = autoFilterKeywords.map(k => k.toLowerCase());
@@ -394,14 +452,14 @@
             });
             
             allParsedData.sort((a, b) => b.id.localeCompare(a.id)); 
-            populateSubjectDropdown();
+            populateSubjectDropdown(); // This will try to preserve selection
             filterTableForDisplay(); 
         }
 
         function filterTableForDisplay() {
             const searchTerm = searchTableInput.value.trim().toLowerCase();
             const selectedSubjectFilter = filterSubjectDropdown.value;
-            let dataToDisplay = allParsedData;
+            let dataToDisplay = allParsedData; // Already filtered by autoFilterKeywords in parseAndDisplayData
 
             if (selectedSubjectFilter) {
                 dataToDisplay = dataToDisplay.filter(item => getProcessedSubject(item.subject) === selectedSubjectFilter);
@@ -460,30 +518,21 @@
         }
         
         function updateRowCount(displayedCount) {
-            const totalParsed = allParsedData.length;
+            const totalInitiallyParsedAndKeywordFiltered = allParsedData.length; // This is already after auto-keywords filter
             const subjectFilterActive = filterSubjectDropdown.value !== "";
-            const keywordFilterActive = autoFilterKeywords.length > 0;
             const searchBoxActive = searchTableInput.value.trim() !== "";
 
-            if (!rawDataInput.value.trim() && totalParsed === 0) {
+            if (!rawDataInput.value.trim() && totalInitiallyParsedAndKeywordFiltered === 0) {
                  rowCountDisplay.textContent = '';
                  return;
             }
             
             let message = `Displaying ${displayedCount} cases.`;
 
-            if (totalParsed > 0 && (subjectFilterActive || keywordFilterActive || searchBoxActive) && displayedCount < totalParsed) {
-                let countAfterDropdownAndKeywords = allParsedData.filter(item => {
-                    const keywordMatch = keywordFilterActive ? autoFilterKeywords.map(k=>k.toLowerCase()).some(k => item.subject.toLowerCase().includes(k)) : true;
-                    const subjectMatch = subjectFilterActive ? getProcessedSubject(item.subject) === filterSubjectDropdown.value : true;
-                    return keywordMatch && subjectMatch;
-                }).length;
-
-                if (searchBoxActive && displayedCount < countAfterDropdownAndKeywords) {
-                     message = `Displaying ${displayedCount} of ${countAfterDropdownAndKeywords} cases. (Total parsed: ${totalParsed})`;
-                } else if (displayedCount < totalParsed) {
-                     message = `Displaying ${displayedCount} of ${totalParsed} cases.`;
-                }
+            if (totalInitiallyParsedAndKeywordFiltered > 0 && (subjectFilterActive || searchBoxActive) && displayedCount < totalInitiallyParsedAndKeywordFiltered) {
+                 message = `Displaying ${displayedCount} of ${totalInitiallyParsedAndKeywordFiltered} initially filtered cases.`;
+                 // To show total from before any filtering: use a separate count if needed, but that's complex.
+                 // The `allParsedData` is already the result of `rawData` + `autoFilterKeywords`.
             }
             rowCountDisplay.textContent = message;
         }
@@ -521,6 +570,7 @@
         });
 
         enableHyperlinksCheckbox.addEventListener('change', () => {
+            saveSettings();
             filterTableForDisplay(); 
         });
 
@@ -547,9 +597,11 @@
                             openedCount++;
                         }
                         if (index === linksToOpen.length - 1) { 
-                             if (openedCount > 0) {
-                                showToast(`Attempted to open ${openedCount} of ${linksToOpen.length} case(s). Check browser pop-up settings.`);
-                            } else if (linksToOpen.length > 0) { 
+                            if (openedCount > 0 && openedCount < linksToOpen.length) {
+                                showToast(`Attempted to open ${openedCount} of ${linksToOpen.length} case(s). Some may have been blocked by pop-up settings.`);
+                            } else if (openedCount === linksToOpen.length && linksToOpen.length > 0) {
+                                showToast(`Attempted to open ${openedCount} case(s).`);
+                            } else if (linksToOpen.length > 0 && openedCount === 0) { 
                                 showToast(`Could not open cases. Please check your browser's pop-up blocker settings.`);
                             }
                         }
@@ -560,13 +612,26 @@
             }
         });
 
-        rawDataInput.addEventListener('input', parseAndDisplayData);
-        filterSubjectDropdown.addEventListener('change', filterTableForDisplay);
-        searchTableInput.addEventListener('input', filterTableForDisplay);
+        rawDataInput.addEventListener('input', () => {
+            parseAndDisplayData();
+            saveSettings(); // Save raw data
+        });
+        filterSubjectDropdown.addEventListener('change', () => {
+            filterTableForDisplay();
+            saveSettings(); // Save dropdown selection
+        });
+        searchTableInput.addEventListener('input', () => {
+            filterTableForDisplay();
+            saveSettings(); // Save search term
+        });
 
+        // --- Initialization ---
         initTheme();
-        parseAndDisplayData();
-        renderKeywords();
+        loadSettings(); // Load all settings
+        renderKeywords(); // Display loaded keywords
+        parseAndDisplayData(); // Parse (potentially loaded) rawData, apply loaded keywords, populate dropdown and try to restore selection, then filter & render table.
+        // filterTableForDisplay() is called at the end of parseAndDisplayData, so it will use loaded search terms and dropdown states.
+
     </script>
 </body>
 </html>
