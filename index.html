@@ -47,11 +47,11 @@
             background: #475569;
         }
 
-        .keyword-tag {
+        .keyword-tag { 
             background-color: #e2e8f0;
             color: #334155;
             padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
+            border-radius: 9999px; 
             font-size: 0.875rem;
             margin-right: 0.5rem;
             margin-bottom: 0.5rem;
@@ -88,7 +88,7 @@
             background-color: #1e293b;
             color: white;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 0.75rem; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1000;
             opacity: 0;
@@ -109,7 +109,7 @@
 
     <div class="w-full py-3 px-4 md:px-8 shadow-md flex justify-between items-center bg-white dark:bg-slate-800">
         <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Amazon Case Parser</h1>
-        <button id="darkModeToggle" class="p-2 rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800 focus:ring-blue-500" aria-label="Toggle dark mode">
+        <button id="darkModeToggle" class="p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800 focus:ring-blue-500" aria-label="Toggle dark mode">
             <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-15.66l-.707.707M4.04 19.96l-.707.707M21 12h-1M4 12H3m15.66 8.66l-.707-.707M4.747 4.747l-.707-.707M12 5.5A6.5 6.5 0 1018.5 12 6.507 6.507 0 0012 5.5z" />
             </svg>
@@ -119,52 +119,53 @@
         </button>
     </div>
 
-    <div class="bg-white dark:bg-slate-800 w-full max-w-5xl rounded-xl shadow-2xl p-6 md:p-8 space-y-6 mt-8 mb-8">
+    <div class="bg-white dark:bg-slate-800 w-full max-w-4xl rounded-3xl shadow-2xl p-6 md:p-8 space-y-6 mt-8 mb-8">
         <section class="space-y-4">
             <div>
                 <label for="rawData" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Paste Case Data:</label>
-                <textarea id="rawData" rows="10" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Paste the entire text from the 'Your Cases and Requests' page here..."></textarea>
+                <textarea id="rawData" rows="10" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Paste the entire text from the 'Your Cases and Requests' page here..."></textarea>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                 <div>
                     <label for="addKeywordInput" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Add Auto-filter Subject Keyword:</label>
                     <div class="flex">
-                        <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-l-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Enter keyword">
-                        <button id="addKeywordButton" class="px-4 py-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-r-lg border border-blue-500 dark:border-blue-600 transition-colors">Add</button>
+                        <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-l-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Enter keyword">
+                        <button id="addKeywordButton" class="px-4 py-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-r-xl border border-blue-500 dark:border-blue-600 transition-colors">Add</button>
                     </div>
-                    <div id="keywordsList" class="mt-2">
+                    <div id="keywordsList" class="mt-2 flex flex-wrap">
                     </div>
                 </div>
                 <div>
                     <label for="filterSubjectDropdown" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Filter by Subject:</label>
-                    <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200">
+                    <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200">
                         <option value="">All Subjects</option>
                     </select>
                     <div class="mt-2 flex items-center">
                         <input type="checkbox" id="enableSubjectGroupingCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
                         <label for="enableSubjectGroupingCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Group Subjects by Prefix</label>
                     </div>
+                    <div class="mt-2 flex items-center">
+                        <input type="checkbox" id="hideNoSubjectCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
+                        <label for="hideNoSubjectCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Hide 'Subject not found'</label>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="space-y-3 md:space-y-0 md:flex md:flex-wrap md:items-center md:justify-start md:gap-4 py-2">
-            <button id="copyDisplayedIdsButton" class="px-4 py-2 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors w-full md:w-auto mb-2 md:mb-0">Copy Displayed IDs</button>
-            <button id="openAllDisplayedIdsButton" class="px-4 py-2 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors w-full md:w-auto mb-2 md:mb-0">Open All Displayed IDs</button>
-            <div class="flex items-center w-full md:w-auto">
-                <input type="checkbox" id="enableHyperlinksCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
-                <label for="enableHyperlinksCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Enable Case ID Hyperlinks</label>
-            </div>
-        </section>
-
         <section class="space-y-4">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200">Parsed Cases</h2>
-                <input type="text" id="searchTable" class="w-full sm:w-1/2 lg:w-1/3 p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Search subjects or Case IDs...">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 py-2">
+                <div class="flex items-center gap-x-3 flex-wrap justify-start w-full md:w-auto mb-2 md:mb-0">
+                    <button id="copyDisplayedIdsButton" class="px-4 py-2 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors">Copy Displayed IDs</button>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="enableHyperlinksCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
+                        <label for="enableHyperlinksCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Enable Hyperlinks</label>
+                    </div>
+                </div>
+                <input type="text" id="searchTable" class="w-full md:flex-grow p-3 border border-slate-300 dark:border-slate-600 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Search subjects or Case IDs...">
             </div>
             
-            <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow">
+            <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow">
                 <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600 table-fixed-layout">
                     <thead class="bg-slate-50 dark:bg-slate-700">
                         <tr>
@@ -193,12 +194,12 @@
         const keywordsListDiv = document.getElementById('keywordsList');
         const filterSubjectDropdown = document.getElementById('filterSubjectDropdown');
         const enableSubjectGroupingCheckbox = document.getElementById('enableSubjectGroupingCheckbox');
+        const hideNoSubjectCheckbox = document.getElementById('hideNoSubjectCheckbox');
         const searchTableInput = document.getElementById('searchTable');
         const resultsTableBody = document.getElementById('resultsTableBody');
         const rowCountDisplay = document.getElementById('rowCount');
         const copyDisplayedIdsButton = document.getElementById('copyDisplayedIdsButton');
         const enableHyperlinksCheckbox = document.getElementById('enableHyperlinksCheckbox');
-        const openAllDisplayedIdsButton = document.getElementById('openAllDisplayedIdsButton');
         const toastNotification = document.getElementById('toastNotification');
         const darkModeToggleButton = document.getElementById('darkModeToggle');
 
@@ -206,7 +207,18 @@
         let autoFilterKeywords = [];
         const CASE_URL_PREFIX = "https://sellercentral.amazon.com/cu/case-dashboard/view-case?ref=sc_cd_lobby_vc_v3&ie=UTF&caseID=";
 
-        // localStorage keys
+        const DEFAULT_SUBJECT_MARKERS = [
+            "Reference ID:", 
+            "Shipment ID:", 
+            "FBA Reimbursement Notification - Case ID",
+            "FBA Inbound Performance problem investigation - Shipment ID",
+            "Amazon-initiated transaction - ",
+            "FBA return claim notification for Order ID",
+            "Investigation of Negative Seller Feedback - Order ID",
+            "Customer Return Inquiry for order"
+        ];
+        let subjectMarkers = [...DEFAULT_SUBJECT_MARKERS];
+
         const LS_THEME_KEY = 'caseParserTheme';
         const LS_KEYWORDS_KEY = 'caseParserKeywords';
         const LS_SUBJECT_GROUPING_KEY = 'caseParserSubjectGrouping';
@@ -214,15 +226,16 @@
         const LS_RAW_DATA_KEY = 'caseParserRawData';
         const LS_SEARCH_TERM_KEY = 'caseParserSearchTerm';
         const LS_SELECTED_SUBJECT_KEY = 'caseParserSelectedSubject';
+        const LS_HIDE_NO_SUBJECT_KEY = 'caseParserHideNoSubject';
 
 
         function initTheme() {
             const savedTheme = localStorage.getItem(LS_THEME_KEY);
             if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
-            } else { // Default to light if no theme saved or if saved as light
+            } else { 
                 document.documentElement.classList.remove('dark');
-                 if (!savedTheme) { // If it was never set, default to light and store it
+                 if (!savedTheme) { 
                     localStorage.setItem(LS_THEME_KEY, 'light');
                 }
             }
@@ -246,12 +259,12 @@
             }
             updateThemeIcons();
         }
-
         darkModeToggleButton.addEventListener('click', toggleTheme);
 
         function saveSettings() {
             localStorage.setItem(LS_KEYWORDS_KEY, JSON.stringify(autoFilterKeywords));
             localStorage.setItem(LS_SUBJECT_GROUPING_KEY, enableSubjectGroupingCheckbox.checked);
+            localStorage.setItem(LS_HIDE_NO_SUBJECT_KEY, hideNoSubjectCheckbox.checked);
             localStorage.setItem(LS_HYPERLINKS_KEY, enableHyperlinksCheckbox.checked);
             localStorage.setItem(LS_RAW_DATA_KEY, rawDataInput.value);
             localStorage.setItem(LS_SEARCH_TERM_KEY, searchTableInput.value);
@@ -263,22 +276,19 @@
             if (storedKeywords) {
                 autoFilterKeywords = JSON.parse(storedKeywords);
             }
-
             enableSubjectGroupingCheckbox.checked = localStorage.getItem(LS_SUBJECT_GROUPING_KEY) === 'true';
+            hideNoSubjectCheckbox.checked = localStorage.getItem(LS_HIDE_NO_SUBJECT_KEY) === 'true';
             enableHyperlinksCheckbox.checked = localStorage.getItem(LS_HYPERLINKS_KEY) === 'true';
 
             const storedRawData = localStorage.getItem(LS_RAW_DATA_KEY);
             if (storedRawData) {
                 rawDataInput.value = storedRawData;
             }
-
             const storedSearchTerm = localStorage.getItem(LS_SEARCH_TERM_KEY);
             if (storedSearchTerm) {
                 searchTableInput.value = storedSearchTerm;
             }
-            // Selected subject will be handled by populateSubjectDropdown
         }
-
 
         function showToast(message) {
             toastNotification.textContent = message;
@@ -318,6 +328,8 @@
                 addKeywordInput.value = '';
             } else if (autoFilterKeywords.some(k => k.toLowerCase() === keyword.toLowerCase())) {
                 showToast("Keyword already added.");
+            } else if (!keyword) {
+                showToast("Keyword cannot be empty.");
             }
         });
         addKeywordInput.addEventListener('keypress', (e) => {
@@ -326,34 +338,22 @@
             }
         });
 
-        const subjectMarkers = [
-            "Reference ID:", 
-            "Shipment ID:", 
-            "FBA Reimbursement Notification - Case ID",
-            "FBA Inbound Performance problem investigation - Shipment ID",
-            "Amazon-initiated transaction - ",
-            "FBA return claim notification for Order ID",
-            "Investigation of Negative Seller Feedback - Order ID",
-            "Customer Return Inquiry for order"
-        ];
-
         function getProcessedSubject(subject) {
             if (!enableSubjectGroupingCheckbox.checked) {
                 return subject.trim();
             }
-
             const subjectLower = subject.toLowerCase();
             for (const marker of subjectMarkers) {
-                const index = subjectLower.indexOf(marker.toLowerCase());
+                const markerLower = marker.toLowerCase();
+                const index = subjectLower.indexOf(markerLower);
                 if (index !== -1) {
                     return subject.substring(0, index + marker.length).trim();
                 }
             }
-            
             const problemIndex = subjectLower.indexOf("problem:");
             if (problemIndex !== -1) {
                 if (!subjectMarkers.some(m => m.toLowerCase().includes("problem:") && subjectLower.includes(m.toLowerCase()))) {
-                    return subject.substring(0, problemIndex).trim();
+                    return subject.substring(0, problemIndex + "problem:".length).trim(); 
                 }
             }
             return subject.trim();
@@ -361,13 +361,23 @@
         
         enableSubjectGroupingCheckbox.addEventListener('change', () => {
             saveSettings();
-            populateSubjectDropdown(); // Repopulate with potentially different grouping
-            filterTableForDisplay(); // Re-filter based on new grouping and selection
+            populateSubjectDropdown(); 
+            filterTableForDisplay(); 
+        });
+
+        hideNoSubjectCheckbox.addEventListener('change', () => {
+            saveSettings();
+            filterTableForDisplay();
         });
 
         function populateSubjectDropdown() {
             const previouslySelectedSubject = localStorage.getItem(LS_SELECTED_SUBJECT_KEY) || filterSubjectDropdown.value;
-            const subjectsForDropdown = [...new Set(allParsedData.map(item => getProcessedSubject(item.subject)).filter(s => s))].sort();
+            let subjectsForDropdownSource = allParsedData;
+            if (hideNoSubjectCheckbox.checked) {
+                subjectsForDropdownSource = subjectsForDropdownSource.filter(item => item.subject.toLowerCase() !== "subject not found");
+            }
+
+            const subjectsForDropdown = [...new Set(subjectsForDropdownSource.map(item => getProcessedSubject(item.subject)).filter(s => s))].sort((a,b) => a.toLowerCase().localeCompare(b.toLowerCase()));
             
             filterSubjectDropdown.innerHTML = '<option value="">All Subjects</option>'; 
             subjectsForDropdown.forEach(subject => {
@@ -377,13 +387,11 @@
                 filterSubjectDropdown.appendChild(option);
             });
 
-            // Try to restore previous selection
             if (subjectsForDropdown.includes(previouslySelectedSubject)) {
                  filterSubjectDropdown.value = previouslySelectedSubject;
             } else {
-                 filterSubjectDropdown.value = ""; // Default to "All Subjects" if previous not found
-                 // Optionally clear the stale stored value if it's no longer valid
-                 if (localStorage.getItem(LS_SELECTED_SUBJECT_KEY) && localStorage.getItem(LS_SELECTED_SUBJECT_KEY) !== previouslySelectedSubject) {
+                 filterSubjectDropdown.value = ""; 
+                 if (localStorage.getItem(LS_SELECTED_SUBJECT_KEY) && localStorage.getItem(LS_SELECTED_SUBJECT_KEY) !== "") { 
                     localStorage.setItem(LS_SELECTED_SUBJECT_KEY, "");
                  }
             }
@@ -391,75 +399,120 @@
 
         function parseAndDisplayData() {
             const rawText = rawDataInput.value;
-            allParsedData = []; 
+            let potentialParsedData = []; 
 
             if (!rawText.trim()) {
+                allParsedData = [];
                 populateSubjectDropdown(); 
                 filterTableForDisplay(); 
                 return;
             }
 
-            const records = rawText.split(/\n\s*View(?:\s*\n|\s*$)/);
-            
-            records.forEach(recordText => {
+            let recordsPrimary = rawText.split(/\n\s*View(?:\s*\n|\s*$)/);
+            recordsPrimary.forEach(recordText => {
                 const trimmedRecord = recordText.trim();
                 if (!trimmedRecord) return;
 
-                const idMatch = trimmedRecord.match(/GMT\+\d{1,2}\s*(\d+)/);
+                const idMatch = trimmedRecord.match(/GMT[+-]?\d{1,2}\s*(\d+)/);
                 const caseId = idMatch ? idMatch[1] : null;
-                if (!caseId) return;
                 
-                let subject = "";
-                const emailAndSubjectRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}\s*(?:\t|\n)*(.*)/s;
-                let subjectMatch = trimmedRecord.match(emailAndSubjectRegex);
-                
-                if (subjectMatch && subjectMatch[1]) {
-                    subject = subjectMatch[1].trim();
-                } else {
-                    const lines = trimmedRecord.split('\n');
-                    let potentialSubjectLine = "";
-                    for(let i = 0; i < lines.length; i++) {
-                        const line = lines[i].trim();
-                        if (line.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) ||
-                            line.match(/GMT[+-]\d{1,2}/) ||
-                            line.toLowerCase().includes("answered") ||
-                            line.toLowerCase().includes("pending amazon action") ||
-                            line.toLowerCase().includes("resolved") ||
-                            line === caseId ||
-                            line.toLowerCase().startsWith("view case") ||
-                            line.length === 0 ) {
-                            continue;
+                if (caseId) {
+                    let subject = "Subject not found";
+                    const emailAndSubjectRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}\s*(?:\t|\n)*(.*)/s;
+                    let subjectMatch = trimmedRecord.match(emailAndSubjectRegex);
+                    
+                    if (subjectMatch && subjectMatch[1]) {
+                        subject = subjectMatch[1].trim();
+                    } else {
+                        const lines = trimmedRecord.split('\n');
+                        let potentialSubjectLine = "";
+                        let caseIdLineIndex = -1;
+                        for(let i = 0; i < lines.length; i++) {
+                            if (lines[i].includes(idMatch[0])) { 
+                                caseIdLineIndex = i;
+                                break;
+                            }
                         }
-                        if (idMatch && lines.slice(0,i).join("\n").includes(caseId)){
-                             potentialSubjectLine = lines.slice(i).join(" ").trim();
-                             break;
+                        if (caseIdLineIndex !== -1 && caseIdLineIndex + 1 < lines.length) {
+                            let subjectCandidateLines = [];
+                            for (let j = caseIdLineIndex + 1; j < lines.length; j++) {
+                                const lineContent = lines[j].trim();
+                                if (lineContent.length === 0 ||
+                                    lineContent.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) || 
+                                    lineContent.toLowerCase().includes("answered") ||
+                                    lineContent.toLowerCase().includes("pending amazon action") ||
+                                    lineContent.toLowerCase().includes("resolved") ||
+                                    lineContent.toLowerCase().startsWith("view case") ||
+                                    lineContent === caseId ) { 
+                                    break;
+                                }
+                                subjectCandidateLines.push(lineContent);
+                            }
+                            potentialSubjectLine = subjectCandidateLines.join(" ").trim();
                         }
+                        if(potentialSubjectLine) subject = potentialSubjectLine;
                     }
-                     subject = potentialSubjectLine || "Subject not found";
-                }
-                
-                subject = subject.replace(/View Case$/i, "").trim();
+                    subject = subject.replace(/View Case$/i, "").trim();
+                    if (!subject) subject = "Subject not found";
 
-                // Auto-filter keywords are applied here during initial parsing
-                if (autoFilterKeywords.length > 0) {
-                    const subjectLower = subject.toLowerCase();
-                    const keywordsLower = autoFilterKeywords.map(k => k.toLowerCase());
-                    if (!keywordsLower.some(k => subjectLower.includes(k))) {
-                        return; 
+                    if (!potentialParsedData.some(item => item.id === caseId)) {
+                         potentialParsedData.push({ id: caseId, subject: subject });
                     }
                 }
-                allParsedData.push({ id: caseId, subject: subject });
             });
+
+            if (potentialParsedData.length === 0 && rawText.trim().length > 0) {
+                const recordBlocks = rawText.split(/\nView(?:[ \t]*\n|$)/);
+                recordBlocks.forEach(block => {
+                    const trimmedBlock = block.trim();
+                    if (!trimmedBlock) return;
+                    const lines = trimmedBlock.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                    
+                    if (lines.length > 0) {
+                        const caseIdCandidate = lines[0];
+                        let subjectCandidate = "Subject not found";
+                        if (/^\d+$/.test(caseIdCandidate)) {
+                            if (lines.length >= 3 && lines[2]) {
+                                subjectCandidate = lines[2];
+                            } else if (lines.length === 2 && lines[1]) {
+                                if(!lines[1].match(/^\d{1,2}\/\d{1,2}\/\d{4}/) && 
+                                   !lines[1].match(/GMT[+-]?\d{1,2}/) && 
+                                   !["answered", "pending amazon action", "resolved"].includes(lines[1].toLowerCase())) {
+                                    subjectCandidate = lines[1];
+                                }
+                            }
+                            if (!potentialParsedData.some(item => item.id === caseIdCandidate)) {
+                                potentialParsedData.push({ id: caseIdCandidate, subject: subjectCandidate });
+                            }
+                        }
+                    }
+                });
+            }
+            
+            allParsedData = potentialParsedData;
+
+            if (autoFilterKeywords.length > 0) {
+                allParsedData = allParsedData.filter(item => {
+                    const subjectLower = item.subject.toLowerCase();
+                    const keywordsLower = autoFilterKeywords.map(k => k.toLowerCase());
+                    return keywordsLower.some(k => subjectLower.includes(k));
+                });
+            }
             
             allParsedData.sort((a, b) => b.id.localeCompare(a.id)); 
-            populateSubjectDropdown(); // This will try to preserve selection
+            populateSubjectDropdown(); 
             filterTableForDisplay(); 
         }
 
         function filterTableForDisplay() {
+            let dataToDisplay = allParsedData; 
             const searchTerm = searchTableInput.value.trim().toLowerCase();
             const selectedSubjectFilter = filterSubjectDropdown.value;
-            let dataToDisplay = allParsedData; // Already filtered by autoFilterKeywords in parseAndDisplayData
+            const shouldHideNoSubject = hideNoSubjectCheckbox.checked;
+
+            if (shouldHideNoSubject) {
+                dataToDisplay = dataToDisplay.filter(item => item.subject.toLowerCase() !== "subject not found");
+            }
 
             if (selectedSubjectFilter) {
                 dataToDisplay = dataToDisplay.filter(item => getProcessedSubject(item.subject) === selectedSubjectFilter);
@@ -481,7 +534,7 @@
             if (data.length === 0) {
                 const tr = document.createElement('tr');
                 let message = 'Paste data above to see results.';
-                if (rawDataInput.value.trim() || autoFilterKeywords.length > 0 || filterSubjectDropdown.value || searchTableInput.value.trim()) {
+                if (rawDataInput.value.trim() || autoFilterKeywords.length > 0 || filterSubjectDropdown.value || searchTableInput.value.trim() || hideNoSubjectCheckbox.checked) {
                      message = 'No cases match your current filters/search.';
                 }
                 tr.innerHTML = `<td colspan="2" class="px-4 py-10 text-center text-slate-500 dark:text-slate-400">${message}</td>`;
@@ -518,22 +571,33 @@
         }
         
         function updateRowCount(displayedCount) {
-            const totalInitiallyParsedAndKeywordFiltered = allParsedData.length; // This is already after auto-keywords filter
+            const totalAfterInitialFilters = allParsedData.length; 
             const subjectFilterActive = filterSubjectDropdown.value !== "";
             const searchBoxActive = searchTableInput.value.trim() !== "";
+            const hideNoSubjectActive = hideNoSubjectCheckbox.checked;
 
-            if (!rawDataInput.value.trim() && totalInitiallyParsedAndKeywordFiltered === 0) {
+
+            if (!rawDataInput.value.trim() && totalAfterInitialFilters === 0 && !autoFilterKeywords.length) {
                  rowCountDisplay.textContent = '';
                  return;
             }
             
             let message = `Displaying ${displayedCount} cases.`;
 
-            if (totalInitiallyParsedAndKeywordFiltered > 0 && (subjectFilterActive || searchBoxActive) && displayedCount < totalInitiallyParsedAndKeywordFiltered) {
-                 message = `Displaying ${displayedCount} of ${totalInitiallyParsedAndKeywordFiltered} initially filtered cases.`;
-                 // To show total from before any filtering: use a separate count if needed, but that's complex.
-                 // The `allParsedData` is already the result of `rawData` + `autoFilterKeywords`.
+            let baseCountForComparison = allParsedData.length;
+            if (autoFilterKeywords.length > 0) {
+                // This count is already after keyword filtering.
             }
+            
+            if (displayedCount < baseCountForComparison && (subjectFilterActive || searchBoxActive || hideNoSubjectActive)) {
+                 message = `Displaying ${displayedCount} of ${baseCountForComparison} cases (after keyword/other filters).`;
+            } else if (baseCountForComparison > 0 && displayedCount === baseCountForComparison && (subjectFilterActive || searchBoxActive || hideNoSubjectActive || autoFilterKeywords.length > 0) ) {
+                 message = `Displaying all ${displayedCount} cases (matching current filters).`;
+            } else if (baseCountForComparison > 0 && displayedCount === baseCountForComparison && autoFilterKeywords.length === 0) {
+                 message = `Displaying ${displayedCount} cases.`;
+            }
+
+
             rowCountDisplay.textContent = message;
         }
         
@@ -544,7 +608,7 @@
                 const idCell = row.querySelector('td:first-child');
                 if (idCell && idCell.textContent.trim() !== "") {
                     const link = idCell.querySelector('a');
-                    idsToCopy.push(link ? link.textContent : idCell.textContent);
+                    idsToCopy.push(link ? link.textContent.trim() : idCell.textContent.trim());
                 }
             });
 
@@ -574,63 +638,23 @@
             filterTableForDisplay(); 
         });
 
-        openAllDisplayedIdsButton.addEventListener('click', () => {
-            if (!enableHyperlinksCheckbox.checked) {
-                showToast("Please enable Case ID hyperlinks first.");
-                return;
-            }
-            const linksToOpen = [];
-            const rows = resultsTableBody.querySelectorAll('tr');
-            rows.forEach(row => {
-                const idLink = row.querySelector('td:first-child a'); 
-                if (idLink && idLink.href) {
-                    linksToOpen.push(idLink.href);
-                }
-            });
-
-            if (linksToOpen.length > 0) {
-                let openedCount = 0;
-                linksToOpen.forEach((url, index) => {
-                    setTimeout(() => {
-                        const newTab = window.open(url, '_blank');
-                        if (newTab) {
-                            openedCount++;
-                        }
-                        if (index === linksToOpen.length - 1) { 
-                            if (openedCount > 0 && openedCount < linksToOpen.length) {
-                                showToast(`Attempted to open ${openedCount} of ${linksToOpen.length} case(s). Some may have been blocked by pop-up settings.`);
-                            } else if (openedCount === linksToOpen.length && linksToOpen.length > 0) {
-                                showToast(`Attempted to open ${openedCount} case(s).`);
-                            } else if (linksToOpen.length > 0 && openedCount === 0) { 
-                                showToast(`Could not open cases. Please check your browser's pop-up blocker settings.`);
-                            }
-                        }
-                    }, index * 150); 
-                });
-            } else {
-                showToast('No hyperlinked Case IDs displayed to open.');
-            }
-        });
-
         rawDataInput.addEventListener('input', () => {
             parseAndDisplayData();
-            saveSettings(); // Save raw data
+            saveSettings(); 
         });
         filterSubjectDropdown.addEventListener('change', () => {
             filterTableForDisplay();
-            saveSettings(); // Save dropdown selection
+            saveSettings(); 
         });
         searchTableInput.addEventListener('input', () => {
             filterTableForDisplay();
-            saveSettings(); // Save search term
+            saveSettings(); 
         });
 
-        // --- Initialization ---
         initTheme();
-        loadSettings(); // Load all settings
-        renderKeywords(); // Display loaded keywords
-        parseAndDisplayData(); // Parse (potentially loaded) rawData, apply loaded keywords, populate dropdown and try to restore selection, then filter & render table.
-        // filterTableForDisplay() is called at the end of parseAndDisplayData, so it will use loaded search terms and dropdown states.
+        loadSettings(); 
+        renderKeywords(); 
+        parseAndDisplayData(); 
 
     </script>
 </body>
