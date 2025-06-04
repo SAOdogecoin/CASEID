@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class=""> <head>
+<html lang="en" class=""> <!-- JS will manage 'dark' class -->
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Case Parser</title>
@@ -20,7 +21,7 @@
             height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #f1f1f1; /* slate-100 or lighter */
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb {
@@ -28,22 +29,21 @@
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; /* slate-500 */
+            background: #94a3b8; /* slate-400 */
         }
 
         /* Custom scrollbar - Dark Mode */
         .dark ::-webkit-scrollbar-track {
-            background: #1e293b; /* slate-800 or similar dark */
+            background: #0f172a; /* slate-900 or darker */
         }
         .dark ::-webkit-scrollbar-thumb {
-            background: #475569; /* slate-600 */
+            background: #334155; /* slate-700 */
         }
         .dark ::-webkit-scrollbar-thumb:hover {
-            background: #64748b; /* slate-500 */
+            background: #475569; /* slate-600 */
         }
 
         .top-bar {
-            /* background-color: #1a202c; /* Tailwind gray-900 for black-ish */
             background-color: #ffffff; /* White */
         }
         .dark .top-bar {
@@ -52,7 +52,7 @@
 
         .keyword-tag {
             background-color: #e2e8f0; /* slate-200 */
-            color: #2d3748; /* slate-700 */
+            color: #334155; /* slate-700 */
             padding: 0.25rem 0.75rem;
             border-radius: 9999px; /* pill shape */
             font-size: 0.875rem;
@@ -67,7 +67,7 @@
         }
         .keyword-tag button {
             margin-left: 0.5rem;
-            color: #718096; /* slate-500 */
+            color: #64748b; /* slate-500 */
             background: none;
             border: none;
             cursor: pointer;
@@ -77,7 +77,7 @@
             color: #94a3b8; /* slate-400 */
         }
         .keyword-tag button:hover {
-            color: #2d3748; /* slate-800 */
+            color: #1e293b; /* slate-800 */
         }
         .dark .keyword-tag button:hover {
             color: #cbd5e1; /* slate-300 */
@@ -106,39 +106,38 @@
             border-color: #64748b; /* slate-500 */
         }
         
-        .secondary-action-button { /* Styles made similar to primary as per request, can be differentiated if needed */
+        .secondary-action-button { 
              background-color: #ffffff;
-             color: #3b82f6; /* blue-500 */
-             border: 1px solid #cbd5e1; /* slate-300 */
+             color: #3b82f6; 
+             border: 1px solid #cbd5e1; 
         }
         .secondary-action-button:hover {
-             background-color: #f8fafc; /* slate-50 */
-             border-color: #94a3b8; /* slate-400 */
+             background-color: #f8fafc; 
+             border-color: #94a3b8; 
         }
          .dark .secondary-action-button {
-            background-color: #334155; /* slate-700 */
-            color: #60a5fa; /* blue-400 */
-            border-color: #475569; /* slate-600 */
+            background-color: #334155; 
+            color: #60a5fa; 
+            border-color: #475569; 
         }
         .dark .secondary-action-button:hover {
-            background-color: #475569; /* slate-600 */
-            border-color: #64748b; /* slate-500 */
+            background-color: #475569; 
+            border-color: #64748b; 
         }
-
 
         .toast {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #2d3748; /* slate-800 */
+            background-color: #1e293b; /* slate-800 */
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1000;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
             visibility: hidden;
         }
         .dark .toast {
@@ -149,58 +148,75 @@
             opacity: 1;
             visibility: visible;
         }
-        /* Ensure Tailwind dark mode works with class strategy */
-        :root {
-            --tw-bg-opacity: 1;
+        .toggle-checkbox:checked + .toggle-label .toggle-dot {
+            transform: translateX(100%);
         }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3b82f6; /* blue-500 */
+        }
+        .dark .toggle-checkbox:checked + .toggle-label {
+            background-color: #60a5fa; /* blue-400 */
+        }
+
     </style>
     <script>
-        // Tailwind dark mode setup
-        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark')
-        } else {
-          document.documentElement.classList.remove('dark')
-        }
+        // Initialize theme based on localStorage, or default to 'light'
+        // This script runs early to prevent FOUC (Flash Of Unstyled Content)
+        (function() {
+            let currentTheme = localStorage.getItem('theme') || 'light'; // Default to light
+            if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                // Ensure 'light' is stored if nothing was there or if it was something else
+                localStorage.setItem('theme', 'light'); 
+            }
+        })();
     </script>
 </head>
-<body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col items-center">
+<body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col items-center transition-colors duration-300">
 
     <div class="top-bar w-full py-3 px-4 md:px-8 shadow-md flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Amazon Case Parser</h1>
-        <button id="darkModeToggle" class="p-2 rounded-md text-sm font-medium 
-                                           text-slate-700 hover:bg-slate-200 
-                                           dark:text-slate-300 dark:hover:bg-slate-700">
-            Toggle Dark Mode
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Amazon Case Parser</h1>
+        <button id="darkModeToggle" class="p-2 rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800 focus:ring-blue-500" aria-label="Toggle dark mode">
+            <!-- SVG icon will be injected here by JS -->
         </button>
     </div>
 
     <div class="bg-white dark:bg-slate-800 w-full max-w-5xl rounded-xl shadow-2xl p-6 md:p-8 space-y-6 mt-8 mb-8">
+        <!-- Input Section -->
         <section class="space-y-4">
             <div>
                 <label for="rawData" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Paste Case Data:</label>
-                <textarea id="rawData" rows="10" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Paste the entire text from the 'Your Cases and Requests' page here..."></textarea>
+                <textarea id="rawData" rows="10" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Paste the entire text from the 'Your Cases and Requests' page here..."></textarea>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                 <div>
                     <label for="addKeywordInput" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Add Auto-filter Subject Keyword:</label>
                     <div class="flex">
-                        <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-l-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Enter keyword">
+                        <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-l-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Enter keyword">
                         <button id="addKeywordButton" class="action-button rounded-l-none rounded-r-lg px-4">Add</button>
                     </div>
                     <div id="keywordsList" class="mt-2">
-                        </div>
+                        <!-- Keywords will be displayed here -->
+                    </div>
                 </div>
                 <div>
                     <label for="filterSubjectDropdown" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Filter by Subject:</label>
-                    <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 dark:text-slate-200">
+                    <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200">
                         <option value="">All Subjects</option>
-                        </select>
+                        <!-- Subjects will be populated here -->
+                    </select>
+                    <div class="mt-2 flex items-center">
+                        <input type="checkbox" id="enableSubjectGroupingCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
+                        <label for="enableSubjectGroupingCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Group Subjects by Prefix</label>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- Actions & Options Section -->
         <section class="space-y-3 md:space-y-0 md:flex md:flex-wrap md:items-center md:justify-start md:gap-4 py-2">
             <button id="copyDisplayedIdsButton" class="action-button w-full md:w-auto mb-2 md:mb-0">Copy Displayed IDs</button>
             <button id="openAllDisplayedIdsButton" class="action-button secondary-action-button w-full md:w-auto mb-2 md:mb-0">Open All Displayed IDs</button>
@@ -211,21 +227,22 @@
         </section>
 
 
+        <!-- Results Section -->
         <section class="space-y-4">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200">Parsed Cases</h2>
-                <input type="text" id="searchTable" class="w-full sm:w-1/2 lg:w-1/3 p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Search subjects or Case IDs...">
+                <input type="text" id="searchTable" class="w-full sm:w-1/2 lg:w-1/3 p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Search subjects or Case IDs...">
             </div>
             
             <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow">
-                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 table-fixed-layout">
+                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-600 table-fixed-layout">
                     <thead class="bg-slate-50 dark:bg-slate-700">
                         <tr>
                             <th scope="col" class="w-1/4 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Case ID</th>
                             <th scope="col" class="w-3/4 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider subject-column">Subject</th>
                         </tr>
                     </thead>
-                    <tbody id="resultsTableBody" class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                    <tbody id="resultsTableBody" class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-600">
                         <tr><td colspan="2" class="px-4 py-10 text-center text-slate-500 dark:text-slate-400">Paste data to see results.</td></tr>
                     </tbody>
                 </table>
@@ -240,11 +257,13 @@
     <div id="toastNotification" class="toast"></div>
 
     <script>
+        // DOM Elements
         const rawDataInput = document.getElementById('rawData');
         const addKeywordInput = document.getElementById('addKeywordInput');
         const addKeywordButton = document.getElementById('addKeywordButton');
         const keywordsListDiv = document.getElementById('keywordsList');
         const filterSubjectDropdown = document.getElementById('filterSubjectDropdown');
+        const enableSubjectGroupingCheckbox = document.getElementById('enableSubjectGroupingCheckbox');
         const searchTableInput = document.getElementById('searchTable');
         const resultsTableBody = document.getElementById('resultsTableBody');
         const rowCountDisplay = document.getElementById('rowCount');
@@ -254,35 +273,47 @@
         const toastNotification = document.getElementById('toastNotification');
         const darkModeToggleButton = document.getElementById('darkModeToggle');
 
+        // App State
         let allParsedData = []; 
         let autoFilterKeywords = [];
         const CASE_URL_PREFIX = "https://sellercentral.amazon.com/cu/case-dashboard/view-case?ref=sc_cd_lobby_vc_v3&ie=UTF&caseID=";
 
+        // SVG Icons for Dark Mode Toggle
+        const sunIcon = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-15.66l-.707.707M4.04 19.96l-.707.707M21 12h-1M4 12H3m15.66 8.66l-.707-.707M4.747 4.747l-.707-.707M12 5.5A6.5 6.5 0 1018.5 12 6.507 6.507 0 0012 5.5z" />
+            </svg>`;
+        const moonIcon = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>`;
+
         // Dark Mode Logic
+        function updateDarkModeToggleIcon(isDark) {
+            darkModeToggleButton.innerHTML = isDark ? sunIcon : moonIcon;
+            darkModeToggleButton.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        }
+
         function setDarkMode(isDark) {
             if (isDark) {
                 document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
-                darkModeToggleButton.textContent = 'Toggle Light Mode';
+                localStorage.setItem('theme', 'dark');
             } else {
                 document.documentElement.classList.remove('dark');
-                localStorage.theme = 'light';
-                darkModeToggleButton.textContent = 'Toggle Dark Mode';
+                localStorage.setItem('theme', 'light');
             }
+            updateDarkModeToggleIcon(isDark);
         }
 
         darkModeToggleButton.addEventListener('click', () => {
             setDarkMode(!document.documentElement.classList.contains('dark'));
         });
-
-        // Initialize dark mode toggle button text
-        if (document.documentElement.classList.contains('dark')) {
-             darkModeToggleButton.textContent = 'Toggle Light Mode';
-        } else {
-             darkModeToggleButton.textContent = 'Toggle Dark Mode';
-        }
+        
+        // Initialize dark mode state and icon on load
+        updateDarkModeToggleIcon(document.documentElement.classList.contains('dark'));
 
 
+        // Toast Notifications
         function showToast(message) {
             toastNotification.textContent = message;
             toastNotification.classList.add('show');
@@ -291,14 +322,16 @@
             }, 3000);
         }
 
+        // Keyword Management
         function renderKeywords() {
             keywordsListDiv.innerHTML = '';
             autoFilterKeywords.forEach((keyword, index) => {
                 const tag = document.createElement('span');
-                tag.className = 'keyword-tag'; // CSS will handle dark mode for this class
+                tag.className = 'keyword-tag';
                 tag.textContent = keyword;
                 const deleteButton = document.createElement('button');
                 deleteButton.innerHTML = '&times;';
+                deleteButton.setAttribute('aria-label', `Remove keyword ${keyword}`);
                 deleteButton.onclick = () => {
                     autoFilterKeywords.splice(index, 1);
                     renderKeywords();
@@ -311,12 +344,12 @@
 
         addKeywordButton.addEventListener('click', () => {
             const keyword = addKeywordInput.value.trim();
-            if (keyword && !autoFilterKeywords.includes(keyword.toLowerCase())) {
-                autoFilterKeywords.push(keyword.toLowerCase());
+            if (keyword && !autoFilterKeywords.some(k => k.toLowerCase() === keyword.toLowerCase())) {
+                autoFilterKeywords.push(keyword); // Store with original casing for display, compare lowercase
                 renderKeywords();
                 parseAndDisplayData(); 
                 addKeywordInput.value = '';
-            } else if (autoFilterKeywords.includes(keyword.toLowerCase())) {
+            } else if (autoFilterKeywords.some(k => k.toLowerCase() === keyword.toLowerCase())) {
                 showToast("Keyword already added.");
             }
         });
@@ -326,18 +359,66 @@
             }
         });
 
+        // Subject Grouping Logic
+        const subjectMarkers = [
+            "Reference ID:", 
+            "Shipment ID:", 
+            "FBA Reimbursement Notification - Case ID",
+            "FBA Inbound Performance problem investigation - Shipment ID", // More specific first
+            "Amazon-initiated transaction - ",
+            "FBA return claim notification for Order ID",
+            "Investigation of Negative Seller Feedback - Order ID",
+            "Customer Return Inquiry for order"
+        ];
 
+        function getProcessedSubject(subject) {
+            if (!enableSubjectGroupingCheckbox.checked) {
+                return subject.trim();
+            }
+
+            const subjectLower = subject.toLowerCase();
+            for (const marker of subjectMarkers) {
+                const index = subjectLower.indexOf(marker.toLowerCase());
+                if (index !== -1) {
+                    return subject.substring(0, index + marker.length).trim();
+                }
+            }
+            
+            const problemIndex = subjectLower.indexOf("problem:");
+            if (problemIndex !== -1) {
+                 // Check if this "problem:" is part of a longer known marker, if so, it's handled above.
+                if (!subjectMarkers.some(m => m.toLowerCase().includes("problem:") && subjectLower.includes(m.toLowerCase()))) {
+                    return subject.substring(0, problemIndex).trim();
+                }
+            }
+            return subject.trim(); // No specific grouping found, return original trimmed
+        }
+        
+        enableSubjectGroupingCheckbox.addEventListener('change', () => {
+            populateSubjectDropdown();
+            filterTableForDisplay();
+        });
+
+
+        // Data Parsing and Display
         function populateSubjectDropdown() {
-            const uniqueSubjects = [...new Set(allParsedData.map(item => item.subject.trim()).filter(s => s))].sort();
             const currentVal = filterSubjectDropdown.value;
-            filterSubjectDropdown.innerHTML = '<option value="">All Subjects</option>'; // Reset
-            uniqueSubjects.forEach(subject => {
+            const subjectsForDropdown = [...new Set(allParsedData.map(item => getProcessedSubject(item.subject)).filter(s => s))].sort();
+            
+            filterSubjectDropdown.innerHTML = '<option value="">All Subjects</option>'; 
+            subjectsForDropdown.forEach(subject => {
                 const option = document.createElement('option');
                 option.value = subject;
                 option.textContent = subject;
                 filterSubjectDropdown.appendChild(option);
             });
-            filterSubjectDropdown.value = currentVal; // try to preserve selection
+
+            // Try to restore previous selection if it still exists or makes sense
+            if (subjectsForDropdown.includes(currentVal)) {
+                 filterSubjectDropdown.value = currentVal;
+            } else {
+                 filterSubjectDropdown.value = ""; // Default to "All Subjects"
+            }
         }
 
         function parseAndDisplayData() {
@@ -360,33 +441,74 @@
                 const caseId = idMatch ? idMatch[1] : null;
                 if (!caseId) return;
                 
+                // Attempt to find subject after email-like pattern OR after "View Case" and date/time patterns
+                // This regex tries to find an email, then captures what's after it.
+                // Or, if no email, it tries to find the subject after typical date/status lines.
+                let subject = "";
                 const emailAndSubjectRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}\s*(?:\t|\n)*(.*)/s;
-                const subjectMatch = trimmedRecord.match(emailAndSubjectRegex);
-                let subject = (subjectMatch && subjectMatch[1]) ? subjectMatch[1].trim() : "";
+                let subjectMatch = trimmedRecord.match(emailAndSubjectRegex);
                 
+                if (subjectMatch && subjectMatch[1]) {
+                    subject = subjectMatch[1].trim();
+                } else {
+                    // Fallback: Look for subject after date/time and status lines
+                    // This is a bit fragile and depends on consistent formatting from Amazon
+                    const lines = trimmedRecord.split('\n');
+                    // Assuming subject is often after lines containing date, status, or case ID itself.
+                    // A common pattern is: Date, Status, Case ID, then Subject
+                    // Let's try to find the line that is NOT date, status, "Answered", "Pending", etc.
+                    let potentialSubjectLine = "";
+                    for(let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (line.match(/^\d{1,2}\/\d{1,2}\/\d{4}/) || // Date like 12/31/2024
+                            line.match(/GMT[+-]\d{1,2}/) || // Timezone
+                            line.toLowerCase().includes("answered") ||
+                            line.toLowerCase().includes("pending amazon action") ||
+                            line.toLowerCase().includes("resolved") ||
+                            line === caseId || // if the case ID itself is on a line
+                            line.toLowerCase().startsWith("view case") ||
+                            line.length === 0 ) {
+                            continue;
+                        }
+                        // If we are past the ID match and it's not a common status/date, it could be the subject
+                        if (idMatch && lines.slice(0,i).join("\n").includes(caseId)){
+                             potentialSubjectLine = lines.slice(i).join(" ").trim(); // Take rest as potential subject
+                             break;
+                        }
+                    }
+                     subject = potentialSubjectLine || "Subject not found"; // Fallback if no better logic
+                }
+                
+                // Remove "View Case" if it was captured as part of the subject
+                subject = subject.replace(/View Case$/i, "").trim();
+
+
                 if (autoFilterKeywords.length > 0) {
                     const subjectLower = subject.toLowerCase();
-                    if (!autoFilterKeywords.some(k => subjectLower.includes(k))) {
+                    const keywordsLower = autoFilterKeywords.map(k => k.toLowerCase());
+                    if (!keywordsLower.some(k => subjectLower.includes(k))) {
                         return; 
                     }
                 }
                 allParsedData.push({ id: caseId, subject: subject });
             });
             
-            allParsedData.sort((a, b) => b.id.localeCompare(a.id)); // Sort by Case ID descending initially
+            allParsedData.sort((a, b) => b.id.localeCompare(a.id)); 
             populateSubjectDropdown();
             filterTableForDisplay(); 
         }
 
         function filterTableForDisplay() {
             const searchTerm = searchTableInput.value.trim().toLowerCase();
-            const selectedSubject = filterSubjectDropdown.value;
+            const selectedSubjectFilter = filterSubjectDropdown.value; // This is the raw value from dropdown (can be grouped or full)
             let dataToDisplay = allParsedData;
 
-            if (selectedSubject) {
-                dataToDisplay = dataToDisplay.filter(item => item.subject === selectedSubject);
+            // Apply subject dropdown filter
+            if (selectedSubjectFilter) {
+                dataToDisplay = dataToDisplay.filter(item => getProcessedSubject(item.subject) === selectedSubjectFilter);
             }
 
+            // Apply search term filter
             if (searchTerm) {
                 dataToDisplay = dataToDisplay.filter(item => 
                     item.subject.toLowerCase().includes(searchTerm) ||
@@ -411,7 +533,7 @@
             } else {
                  data.forEach(item => {
                     const tr = document.createElement('tr');
-                    tr.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-700', 'transition-colors');
+                    tr.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-700/50', 'transition-colors');
                     
                     const tdId = document.createElement('td');
                     tdId.className = 'px-4 py-3 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300';
@@ -420,6 +542,7 @@
                         link.href = CASE_URL_PREFIX + item.id;
                         link.textContent = item.id;
                         link.target = "_blank";
+                        link.rel = "noopener noreferrer"; // Security best practice
                         link.classList.add('text-blue-600', 'dark:text-blue-400', 'hover:text-blue-800', 'dark:hover:text-blue-300', 'hover:underline');
                         tdId.appendChild(link);
                     } else {
@@ -435,44 +558,48 @@
                     resultsTableBody.appendChild(tr);
                 });
             }
-            updateRowCount(data.length, allParsedData.length);
+            updateRowCount(data.length);
         }
         
-        function updateRowCount(displayedCount, totalParsedCount) {
-            if (!rawDataInput.value.trim() && totalParsedCount === 0) {
+        function updateRowCount(displayedCount) {
+            const totalParsed = allParsedData.length;
+            const subjectFilterActive = filterSubjectDropdown.value !== "";
+            const keywordFilterActive = autoFilterKeywords.length > 0;
+            const searchBoxActive = searchTableInput.value.trim() !== "";
+
+            if (!rawDataInput.value.trim() && totalParsed === 0) {
                  rowCountDisplay.textContent = '';
                  return;
             }
-
-            let baseTotalForMessage = allParsedData.length; // Total after autoFilterKeywords and before subject/searchbox filter
-
-            // If subject dropdown is active, the "of X" should be based on that filtered subset
-            if (filterSubjectDropdown.value) {
-                baseTotalForMessage = allParsedData.filter(item => item.subject === filterSubjectDropdown.value).length;
-            }
             
-            if (searchTableInput.value.trim() && displayedCount !== baseTotalForMessage) {
-                 rowCountDisplay.textContent = `Displaying ${displayedCount} of ${baseTotalForMessage} cases. (Total unique parsed: ${allParsedData.length})`;
-            } else if (displayedCount !== allParsedData.length && (autoFilterKeywords.length > 0 || filterSubjectDropdown.value)) {
-                 rowCountDisplay.textContent = `Displaying ${displayedCount} of ${allParsedData.length} cases.`;
+            let message = `Displaying ${displayedCount} cases.`;
+
+            if (totalParsed > 0 && (subjectFilterActive || keywordFilterActive || searchBoxActive) && displayedCount < totalParsed) {
+                // Calculate count before search box filter but after keyword and subject dropdown filters
+                let countAfterDropdownAndKeywords = allParsedData.filter(item => {
+                    const keywordMatch = keywordFilterActive ? autoFilterKeywords.map(k=>k.toLowerCase()).some(k => item.subject.toLowerCase().includes(k)) : true;
+                    const subjectMatch = subjectFilterActive ? getProcessedSubject(item.subject) === filterSubjectDropdown.value : true;
+                    return keywordMatch && subjectMatch;
+                }).length;
+
+                if (searchBoxActive && displayedCount < countAfterDropdownAndKeywords) {
+                     message = `Displaying ${displayedCount} of ${countAfterDropdownAndKeywords} cases. (Total parsed: ${totalParsed})`;
+                } else if (displayedCount < totalParsed) {
+                     message = `Displaying ${displayedCount} of ${totalParsed} cases.`;
+                }
             }
-            else {
-                 rowCountDisplay.textContent = `Displaying ${displayedCount} cases.`;
-            }
+            rowCountDisplay.textContent = message;
         }
         
+        // Action Buttons
         copyDisplayedIdsButton.addEventListener('click', () => {
             const idsToCopy = [];
             const rows = resultsTableBody.querySelectorAll('tr');
             rows.forEach(row => {
                 const idCell = row.querySelector('td:first-child');
-                if (idCell) {
+                if (idCell && idCell.textContent.trim() !== "") { // Ensure it's not an empty/message row
                     const link = idCell.querySelector('a');
-                    if (link) {
-                        idsToCopy.push(link.textContent);
-                    } else {
-                        idsToCopy.push(idCell.textContent);
-                    }
+                    idsToCopy.push(link ? link.textContent : idCell.textContent);
                 }
             });
 
@@ -493,7 +620,7 @@
                 }
                 document.body.removeChild(textArea);
             } else {
-                showToast('No Case IDs to copy.');
+                showToast('No Case IDs displayed to copy.');
             }
         });
 
@@ -516,37 +643,33 @@
             });
 
             if (linksToOpen.length > 0) {
-                let count = 0;
+                let openedCount = 0;
                 linksToOpen.forEach((url, index) => {
                     setTimeout(() => {
                         const newTab = window.open(url, '_blank');
                         if (newTab) {
-                            count++;
+                            openedCount++;
                         }
-                        if (index === linksToOpen.length - 1) { // Check on the last attempt
-                             if (count > 0) {
-                                showToast(`Attempted to open ${count} case(s). Check browser pop-up settings if some didn't open.`);
-                            } else if (linksToOpen.length > 0) { // If attempted but all failed
+                        if (index === linksToOpen.length - 1) { 
+                             if (openedCount > 0) {
+                                showToast(`Attempted to open ${openedCount} of ${linksToOpen.length} case(s). Check browser pop-up settings.`);
+                            } else if (linksToOpen.length > 0) { 
                                 showToast(`Could not open cases. Please check your browser's pop-up blocker settings.`);
                             }
                         }
-                    }, index * 150); // Slightly increased delay
+                    }, index * 150); 
                 });
-                 if (linksToOpen.length === 0 && displayedData.length > 0 ) { // Typo, should be current displayed data
-                     showToast("No hyperlinked Case IDs currently displayed to open.");
-                 }
             } else {
-                showToast('No displayed Case IDs to open.');
+                showToast('No hyperlinked Case IDs displayed to open.');
             }
         });
-
 
         // Event Listeners
         rawDataInput.addEventListener('input', parseAndDisplayData);
         filterSubjectDropdown.addEventListener('change', filterTableForDisplay);
         searchTableInput.addEventListener('input', filterTableForDisplay);
 
-        // Initial call
+        // Initial setup
         parseAndDisplayData();
         renderKeywords();
 
