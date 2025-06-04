@@ -1,14 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" class=""> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Case Parser</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        html.dark {
-            color-scheme: dark;
-        }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         }
@@ -18,7 +14,7 @@
         .subject-column {
             word-break: break-word;
         }
-        /* Custom scrollbar */
+        /* Custom scrollbar - Light Mode */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -27,50 +23,37 @@
             background: #f1f1f1;
             border-radius: 10px;
         }
-        html.dark ::-webkit-scrollbar-track {
-            background: #374151; /* gray-700 */
-        }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1; /* slate-300 */
             border-radius: 10px;
         }
-        html.dark ::-webkit-scrollbar-thumb {
-            background: #6b7280; /* gray-500 */
-        }
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8; /* slate-500 */
         }
-        html.dark ::-webkit-scrollbar-thumb:hover {
-            background: #4b5563; /* gray-600 */
+
+        /* Custom scrollbar - Dark Mode */
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b; /* slate-800 or similar dark */
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569; /* slate-600 */
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* slate-500 */
         }
 
-        .action-button {
-            background-color: white;
-            color: #374151; /* gray-700 */
-            border: 1px solid #d1d5db; /* gray-300 */
-            padding: 0.625rem 1.25rem; /* py-2.5 px-5 */
-            border-radius: 0.75rem; /* rounded-xl */
-            font-weight: 500;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        .top-bar {
+            /* background-color: #1a202c; /* Tailwind gray-900 for black-ish */
+            background-color: #ffffff; /* White */
         }
-        .action-button:hover {
-            background-color: #f3f4f6; /* gray-100 */
-            border-color: #9ca3af; /* gray-400 */
+        .dark .top-bar {
+            background-color: #1e293b; /* slate-800 for dark mode */
         }
-        html.dark .action-button {
-            background-color: #374151; /* gray-700 */
-            color: #f3f4f6; /* gray-100 */
-            border-color: #4b5563; /* gray-600 */
-        }
-        html.dark .action-button:hover {
-            background-color: #4b5563; /* gray-600 */
-            border-color: #6b7280; /* gray-500 */
-        }
-        
+
         .keyword-tag {
-            background-color: #e5e7eb; /* gray-200 */
-            color: #374151; /* gray-700 */
-            padding: 0.375rem 0.875rem; /* py-1.5 px-3.5 */
+            background-color: #e2e8f0; /* slate-200 */
+            color: #2d3748; /* slate-700 */
+            padding: 0.25rem 0.75rem;
             border-radius: 9999px; /* pill shape */
             font-size: 0.875rem;
             margin-right: 0.5rem;
@@ -78,174 +61,180 @@
             display: inline-flex;
             align-items: center;
         }
-        html.dark .keyword-tag {
-            background-color: #4b5563; /* gray-600 */
-            color: #e5e7eb; /* gray-200 */
+        .dark .keyword-tag {
+            background-color: #475569; /* slate-600 */
+            color: #e2e8f0; /* slate-200 */
         }
         .keyword-tag button {
             margin-left: 0.5rem;
-            color: #6b7280; /* gray-500 */
+            color: #718096; /* slate-500 */
             background: none;
             border: none;
             cursor: pointer;
             font-weight: bold;
         }
-        html.dark .keyword-tag button {
-            color: #9ca3af; /* gray-400 */
+        .dark .keyword-tag button {
+            color: #94a3b8; /* slate-400 */
         }
         .keyword-tag button:hover {
-            color: #1f2937; /* gray-800 */
+            color: #2d3748; /* slate-800 */
         }
-        html.dark .keyword-tag button:hover {
-            color: #f9fafb; /* gray-50 */
+        .dark .keyword-tag button:hover {
+            color: #cbd5e1; /* slate-300 */
         }
+
+        .action-button {
+            background-color: #ffffff; /* white */
+            color: #3b82f6; /* blue-500 */
+            border: 1px solid #cbd5e1; /* slate-300 */
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; /* rounded-md */
+            font-weight: 500;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .action-button:hover {
+            background-color: #f8fafc; /* slate-50 */
+            border-color: #94a3b8; /* slate-400 */
+        }
+        .dark .action-button {
+            background-color: #334155; /* slate-700 */
+            color: #60a5fa; /* blue-400 */
+            border-color: #475569; /* slate-600 */
+        }
+        .dark .action-button:hover {
+            background-color: #475569; /* slate-600 */
+            border-color: #64748b; /* slate-500 */
+        }
+        
+        .secondary-action-button { /* Styles made similar to primary as per request, can be differentiated if needed */
+             background-color: #ffffff;
+             color: #3b82f6; /* blue-500 */
+             border: 1px solid #cbd5e1; /* slate-300 */
+        }
+        .secondary-action-button:hover {
+             background-color: #f8fafc; /* slate-50 */
+             border-color: #94a3b8; /* slate-400 */
+        }
+         .dark .secondary-action-button {
+            background-color: #334155; /* slate-700 */
+            color: #60a5fa; /* blue-400 */
+            border-color: #475569; /* slate-600 */
+        }
+        .dark .secondary-action-button:hover {
+            background-color: #475569; /* slate-600 */
+            border-color: #64748b; /* slate-500 */
+        }
+
 
         .toast {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #1f2937; /* gray-800 */
+            background-color: #2d3748; /* slate-800 */
             color: white;
-            padding: 12px 24px;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1000;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out;
             visibility: hidden;
-            transform: translate(-50%, 20px);
+        }
+        .dark .toast {
+            background-color: #e2e8f0; /* slate-200 */
+            color: #1e293b; /* slate-800 */
         }
         .toast.show {
             opacity: 1;
             visibility: visible;
-            transform: translateX(-50%);
         }
-        #settingsPanel {
-            display: none; /* Hidden by default */
-            position: absolute;
-            top: 100%; /* Position below the settings icon */
-            right: 0;
-            z-index: 50;
+        /* Ensure Tailwind dark mode works with class strategy */
+        :root {
+            --tw-bg-opacity: 1;
         }
     </style>
+    <script>
+        // Tailwind dark mode setup
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+    </script>
 </head>
-<body class="bg-white dark:bg-slate-900 min-h-screen flex flex-col items-center transition-colors duration-300">
+<body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col items-center">
 
-    <div class="w-full py-3 px-4 md:px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40 transition-colors duration-300">
-        <div class="max-w-full mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Amazon Case Parser</h1>
-            <div class="flex items-center space-x-3">
-                <button id="darkModeToggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300">
-                    <!-- Sun icon -->
-                    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <!-- Moon icon (hidden by default) -->
-                    <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </button>
-                <div class="relative">
-                    <button id="settingsButton" aria-label="Settings" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                    </button>
-                    <div id="settingsPanel" class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-4 w-72 border border-slate-200 dark:border-slate-700 mt-2">
-                        <h3 class="text-lg font-semibold text-slate-800 dark:text-white mb-3">Settings</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="flex items-center space-x-2 text-sm text-slate-700 dark:text-slate-300">
-                                    <input type="checkbox" id="ignoreSubjectNumbers" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 dark:focus:ring-offset-slate-800">
-                                    <span>Normalize subjects in dropdown (ignore trailing IDs)</span>
-                                </label>
-                            </div>
-                            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 mt-2">Show Columns:</p>
-                            <label class="flex items-center space-x-2 text-sm text-slate-700 dark:text-slate-300">
-                                <input type="checkbox" id="showCreationDate" class="column-toggle h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 dark:focus:ring-offset-slate-800" data-column="creationDate" checked>
-                                <span>Creation Date</span>
-                            </label>
-                            <label class="flex items-center space-x-2 text-sm text-slate-700 dark:text-slate-300">
-                                <input type="checkbox" id="showStatus" class="column-toggle h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 dark:focus:ring-offset-slate-800" data-column="status" checked>
-                                <span>Status</span>
-                            </label>
-                            <label class="flex items-center space-x-2 text-sm text-slate-700 dark:text-slate-300">
-                                <input type="checkbox" id="showEmail" class="column-toggle h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 dark:focus:ring-offset-slate-800" data-column="email" checked>
-                                <span>Primary E-mail</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="top-bar w-full py-3 px-4 md:px-8 shadow-md flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Amazon Case Parser</h1>
+        <button id="darkModeToggle" class="p-2 rounded-md text-sm font-medium 
+                                           text-slate-700 hover:bg-slate-200 
+                                           dark:text-slate-300 dark:hover:bg-slate-700">
+            Toggle Dark Mode
+        </button>
     </div>
 
-    <div class="w-full max-w-7xl p-4 md:p-6 space-y-6 flex-grow">
-        <!-- Input Section -->
-        <section class="space-y-4 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg transition-colors duration-300">
+    <div class="bg-white dark:bg-slate-800 w-full max-w-5xl rounded-xl shadow-2xl p-6 md:p-8 space-y-6 mt-8 mb-8">
+        <section class="space-y-4">
             <div>
                 <label for="rawData" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Paste Case Data:</label>
-                <textarea id="rawData" rows="10" class="w-full p-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow" placeholder="Paste the entire text from the 'Your Cases and Requests' page here..."></textarea>
+                <textarea id="rawData" rows="10" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Paste the entire text from the 'Your Cases and Requests' page here..."></textarea>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label for="addKeywordInput" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Add Auto-filter Subject Keyword:</label>
                     <div class="flex">
-                        <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 rounded-l-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow" placeholder="Enter keyword">
-                        <button id="addKeywordButton" class="action-button rounded-l-none rounded-r-xl px-4">Add</button>
+                        <input type="text" id="addKeywordInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-l-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Enter keyword">
+                        <button id="addKeywordButton" class="action-button rounded-l-none rounded-r-lg px-4">Add</button>
                     </div>
-                    <div id="keywordsList" class="mt-2 flex flex-wrap">
-                        <!-- Keywords will be displayed here -->
-                    </div>
+                    <div id="keywordsList" class="mt-2">
+                        </div>
                 </div>
                 <div>
                     <label for="filterSubjectDropdown" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Filter by Subject:</label>
-                    <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow">
+                    <select id="filterSubjectDropdown" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 dark:text-slate-200">
                         <option value="">All Subjects</option>
-                        <!-- Subjects will be populated here -->
-                    </select>
+                        </select>
                 </div>
             </div>
         </section>
 
-        <!-- Actions & Options Section -->
-        <section class="space-y-3 md:space-y-0 md:flex md:flex-wrap md:items-center md:justify-start md:gap-4 py-3 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg transition-colors duration-300">
+        <section class="space-y-3 md:space-y-0 md:flex md:flex-wrap md:items-center md:justify-start md:gap-4 py-2">
             <button id="copyDisplayedIdsButton" class="action-button w-full md:w-auto mb-2 md:mb-0">Copy Displayed IDs</button>
-            <button id="openAllDisplayedIdsButton" class="action-button w-full md:w-auto mb-2 md:mb-0">Open All Displayed IDs</button>
+            <button id="openAllDisplayedIdsButton" class="action-button secondary-action-button w-full md:w-auto mb-2 md:mb-0">Open All Displayed IDs</button>
             <div class="flex items-center w-full md:w-auto">
-                <input type="checkbox" id="enableHyperlinksCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 dark:focus:ring-offset-slate-800">
+                <input type="checkbox" id="enableHyperlinksCheckbox" class="h-4 w-4 text-blue-600 border-slate-300 dark:border-slate-600 rounded focus:ring-blue-500 bg-white dark:bg-slate-700 dark:focus:ring-offset-slate-800">
                 <label for="enableHyperlinksCheckbox" class="ml-2 block text-sm text-slate-700 dark:text-slate-300">Enable Case ID Hyperlinks</label>
             </div>
         </section>
 
 
-        <!-- Results Section -->
-        <section class="space-y-4 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg transition-colors duration-300">
+        <section class="space-y-4">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200">Parsed Cases</h2>
-                <input type="text" id="searchTable" class="w-full sm:w-1/2 lg:w-1/3 p-3 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow" placeholder="Search table...">
+                <input type="text" id="searchTable" class="w-full sm:w-1/2 lg:w-1/3 p-3 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400" placeholder="Search subjects or Case IDs...">
             </div>
             
-            <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 shadow">
+            <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow">
                 <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 table-fixed-layout">
                     <thead class="bg-slate-50 dark:bg-slate-700">
-                        <tr id="tableHeaderRow">
-                            <!-- Headers will be dynamically inserted here -->
+                        <tr>
+                            <th scope="col" class="w-1/4 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Case ID</th>
+                            <th scope="col" class="w-3/4 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider subject-column">Subject</th>
                         </tr>
                     </thead>
                     <tbody id="resultsTableBody" class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                        <tr><td colspan="5" class="px-4 py-10 text-center text-slate-500 dark:text-slate-400">Paste data to see results.</td></tr>
+                        <tr><td colspan="2" class="px-4 py-10 text-center text-slate-500 dark:text-slate-400">Paste data to see results.</td></tr>
                     </tbody>
                 </table>
             </div>
             <p id="rowCount" class="text-sm text-slate-500 dark:text-slate-400 text-right"></p>
         </section>
 
-        <footer class="text-center text-xs text-slate-400 dark:text-slate-500 py-6">
-            Offline Tool &copy; 2024
+        <footer class="text-center text-xs text-slate-400 dark:text-slate-500 pt-4 border-t border-slate-200 dark:border-slate-700">
+            Offline Tool &copy; 2025
         </footer>
     </div>
     <div id="toastNotification" class="toast"></div>
@@ -258,87 +247,40 @@
         const filterSubjectDropdown = document.getElementById('filterSubjectDropdown');
         const searchTableInput = document.getElementById('searchTable');
         const resultsTableBody = document.getElementById('resultsTableBody');
-        const tableHeaderRow = document.getElementById('tableHeaderRow');
         const rowCountDisplay = document.getElementById('rowCount');
         const copyDisplayedIdsButton = document.getElementById('copyDisplayedIdsButton');
         const enableHyperlinksCheckbox = document.getElementById('enableHyperlinksCheckbox');
         const openAllDisplayedIdsButton = document.getElementById('openAllDisplayedIdsButton');
         const toastNotification = document.getElementById('toastNotification');
-        const settingsButton = document.getElementById('settingsButton');
-        const settingsPanel = document.getElementById('settingsPanel');
-        const ignoreSubjectNumbersCheckbox = document.getElementById('ignoreSubjectNumbers');
-        const columnToggleCheckboxes = document.querySelectorAll('.column-toggle');
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const sunIcon = document.getElementById('sunIcon');
-        const moonIcon = document.getElementById('moonIcon');
-
+        const darkModeToggleButton = document.getElementById('darkModeToggle');
 
         let allParsedData = []; 
         let autoFilterKeywords = [];
         const CASE_URL_PREFIX = "https://sellercentral.amazon.com/cu/case-dashboard/view-case?ref=sc_cd_lobby_vc_v3&ie=UTF&caseID=";
 
-        let settings = {
-            ignoreSubjectNumbers: false,
-            showCreationDate: true,
-            showStatus: true,
-            showEmail: true
-        };
-
         // Dark Mode Logic
-        function applyDarkModePreference() {
-            if (localStorage.getItem('darkMode') === 'true' || 
-                (localStorage.getItem('darkMode') === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        function setDarkMode(isDark) {
+            if (isDark) {
                 document.documentElement.classList.add('dark');
-                sunIcon.classList.add('hidden');
-                moonIcon.classList.remove('hidden');
-                settings.darkMode = true;
+                localStorage.theme = 'dark';
+                darkModeToggleButton.textContent = 'Toggle Light Mode';
             } else {
                 document.documentElement.classList.remove('dark');
-                sunIcon.classList.remove('hidden');
-                moonIcon.classList.add('hidden');
-                settings.darkMode = false;
+                localStorage.theme = 'light';
+                darkModeToggleButton.textContent = 'Toggle Dark Mode';
             }
         }
 
-        darkModeToggle.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('darkMode', isDark);
-            sunIcon.classList.toggle('hidden', isDark);
-            moonIcon.classList.toggle('hidden', !isDark);
-            settings.darkMode = isDark;
-        });
-        
-        applyDarkModePreference(); // Apply on initial load
-
-
-        // Settings Panel Logic
-        settingsButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent click from bubbling to document
-            settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
+        darkModeToggleButton.addEventListener('click', () => {
+            setDarkMode(!document.documentElement.classList.contains('dark'));
         });
 
-        document.addEventListener('click', (event) => {
-            if (!settingsPanel.contains(event.target) && event.target !== settingsButton && !settingsButton.contains(event.target)) {
-                settingsPanel.style.display = 'none';
-            }
-        });
-        
-        ignoreSubjectNumbersCheckbox.addEventListener('change', (e) => {
-            settings.ignoreSubjectNumbers = e.target.checked;
-            // Repopulate dropdown and re-filter if data exists
-            if(allParsedData.length > 0) {
-                populateSubjectDropdown();
-                filterTableForDisplay();
-            }
-        });
-
-        columnToggleCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                settings[e.target.dataset.column] = e.target.checked;
-                renderTableStructure(); // Re-render headers
-                filterTableForDisplay(); // Re-render data with correct columns
-            });
-        });
+        // Initialize dark mode toggle button text
+        if (document.documentElement.classList.contains('dark')) {
+             darkModeToggleButton.textContent = 'Toggle Light Mode';
+        } else {
+             darkModeToggleButton.textContent = 'Toggle Dark Mode';
+        }
 
 
         function showToast(message) {
@@ -353,7 +295,7 @@
             keywordsListDiv.innerHTML = '';
             autoFilterKeywords.forEach((keyword, index) => {
                 const tag = document.createElement('span');
-                tag.className = 'keyword-tag';
+                tag.className = 'keyword-tag'; // CSS will handle dark mode for this class
                 tag.textContent = keyword;
                 const deleteButton = document.createElement('button');
                 deleteButton.innerHTML = '&times;';
@@ -384,35 +326,19 @@
             }
         });
 
-        function normalizeSubject(subject) {
-            if (settings.ignoreSubjectNumbers) {
-                // Remove common ID patterns and trailing numbers/alphanumeric sequences
-                return subject.replace(/\s*(?:Reference ID:|FNSKU:|OrderID:|ASIN:)\s*[\w\d\-:\s]*[\w\d\-]+$/i, '')
-                              .replace(/\s*#?[\w\d\-]{6,}/gi, '') // Remove things like #AB12CD or long alphanumeric strings
-                              .trim();
-            }
-            return subject.trim();
-        }
 
         function populateSubjectDropdown() {
-            const currentSubjectValue = filterSubjectDropdown.value;
-            const uniqueSubjects = [...new Set(allParsedData.map(item => normalizeSubject(item.subject)).filter(s => s))].sort();
-            filterSubjectDropdown.innerHTML = '<option value="">All Subjects</option>'; 
+            const uniqueSubjects = [...new Set(allParsedData.map(item => item.subject.trim()).filter(s => s))].sort();
+            const currentVal = filterSubjectDropdown.value;
+            filterSubjectDropdown.innerHTML = '<option value="">All Subjects</option>'; // Reset
             uniqueSubjects.forEach(subject => {
                 const option = document.createElement('option');
                 option.value = subject;
                 option.textContent = subject;
                 filterSubjectDropdown.appendChild(option);
             });
-            // Try to restore previous selection if still valid
-            if (uniqueSubjects.includes(currentSubjectValue)) {
-                filterSubjectDropdown.value = currentSubjectValue;
-            }
+            filterSubjectDropdown.value = currentVal; // try to preserve selection
         }
-        
-        // Regex to parse each record after splitting by "View"
-        // Groups: 1: Creation Date, 2: Case ID, 3: Status, 4: Email (optional), 5: Subject
-        const recordParseRegex = /^(.*?GMT\+\d{1,2})\s*(\d+)\s*([^\t\n]+?)\s*(?:([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})\s*)?(.*)$/s;
 
         function parseAndDisplayData() {
             const rawText = rawDataInput.value;
@@ -420,7 +346,7 @@
 
             if (!rawText.trim()) {
                 filterTableForDisplay(); 
-                populateSubjectDropdown();
+                populateSubjectDropdown(); 
                 return;
             }
 
@@ -430,144 +356,107 @@
                 const trimmedRecord = recordText.trim();
                 if (!trimmedRecord) return;
 
-                const match = trimmedRecord.match(recordParseRegex);
-                if (match) {
-                    const creationDate = match[1] ? match[1].trim() : "N/A";
-                    const caseId = match[2] ? match[2].trim() : null;
-                    const status = match[3] ? match[3].trim() : "N/A";
-                    const email = match[4] ? match[4].trim() : ""; // Empty if no email
-                    const subject = match[5] ? match[5].trim() : "";
-                    
-                    if (!caseId) return; // Skip if no case ID
-
-                    // Auto-filter by keywords
-                    if (autoFilterKeywords.length > 0) {
-                        const subjectLower = subject.toLowerCase();
-                        if (!autoFilterKeywords.some(k => subjectLower.includes(k))) {
-                            return; 
-                        }
+                const idMatch = trimmedRecord.match(/GMT\+\d{1,2}\s*(\d+)/);
+                const caseId = idMatch ? idMatch[1] : null;
+                if (!caseId) return;
+                
+                const emailAndSubjectRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}\s*(?:\t|\n)*(.*)/s;
+                const subjectMatch = trimmedRecord.match(emailAndSubjectRegex);
+                let subject = (subjectMatch && subjectMatch[1]) ? subjectMatch[1].trim() : "";
+                
+                if (autoFilterKeywords.length > 0) {
+                    const subjectLower = subject.toLowerCase();
+                    if (!autoFilterKeywords.some(k => subjectLower.includes(k))) {
+                        return; 
                     }
-                    allParsedData.push({ 
-                        creationDate, 
-                        id: caseId, 
-                        status, 
-                        email, 
-                        subject 
-                    });
                 }
+                allParsedData.push({ id: caseId, subject: subject });
             });
             
+            allParsedData.sort((a, b) => b.id.localeCompare(a.id)); // Sort by Case ID descending initially
             populateSubjectDropdown();
             filterTableForDisplay(); 
         }
 
         function filterTableForDisplay() {
             const searchTerm = searchTableInput.value.trim().toLowerCase();
-            const selectedSubjectFromDropdown = filterSubjectDropdown.value;
+            const selectedSubject = filterSubjectDropdown.value;
             let dataToDisplay = allParsedData;
 
-            // Filter by selected subject from dropdown (normalized if setting is on)
-            if (selectedSubjectFromDropdown) {
-                dataToDisplay = dataToDisplay.filter(item => normalizeSubject(item.subject) === selectedSubjectFromDropdown);
+            if (selectedSubject) {
+                dataToDisplay = dataToDisplay.filter(item => item.subject === selectedSubject);
             }
 
-            // Filter by search term in the search box
             if (searchTerm) {
                 dataToDisplay = dataToDisplay.filter(item => 
                     item.subject.toLowerCase().includes(searchTerm) ||
-                    item.id.toLowerCase().includes(searchTerm) ||
-                    (settings.showCreationDate && item.creationDate.toLowerCase().includes(searchTerm)) ||
-                    (settings.showStatus && item.status.toLowerCase().includes(searchTerm)) ||
-                    (settings.showEmail && item.email.toLowerCase().includes(searchTerm))
+                    item.id.toLowerCase().includes(searchTerm)
                 );
             }
-            renderTable(dataToDisplay, searchTerm || selectedSubjectFromDropdown);
-        }
-        
-        function renderTableStructure() {
-            tableHeaderRow.innerHTML = ''; // Clear existing headers
-            let colCount = 0;
-
-            const addHeader = (text, defaultClass = "px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider") => {
-                const th = document.createElement('th');
-                th.scope = "col";
-                th.className = defaultClass;
-                th.textContent = text;
-                tableHeaderRow.appendChild(th);
-                colCount++;
-            };
-
-            if (settings.showCreationDate) addHeader("Creation Date", "w-1/5 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider");
-            addHeader("Case ID", "w-1/6 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider");
-            if (settings.showStatus) addHeader("Status", "w-1/6 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider");
-            if (settings.showEmail) addHeader("Primary E-mail", "w-1/5 px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider");
-            addHeader("Subject", "w-auto px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider subject-column"); // Subject takes remaining width
-            
-            return colCount;
+            renderTable(dataToDisplay);
         }
 
-
-        function renderTable(data, isFiltered) {
-            const colCount = renderTableStructure(); // Render headers and get column count
+        function renderTable(data) {
             resultsTableBody.innerHTML = ''; 
             const hyperlinksEnabled = enableHyperlinksCheckbox.checked;
 
             if (data.length === 0) {
                 const tr = document.createElement('tr');
                 let message = 'Paste data above to see results.';
-                if (allParsedData.length > 0 || rawDataInput.value.trim()) {
-                    message = 'No cases match your current filters/search.';
+                if (rawDataInput.value.trim() || autoFilterKeywords.length > 0 || filterSubjectDropdown.value || searchTableInput.value.trim()) {
+                     message = 'No cases match your current filters/search.';
                 }
-                tr.innerHTML = `<td colspan="${colCount}" class="px-4 py-10 text-center text-slate-500 dark:text-slate-400">${message}</td>`;
+                tr.innerHTML = `<td colspan="2" class="px-4 py-10 text-center text-slate-500 dark:text-slate-400">${message}</td>`;
                 resultsTableBody.appendChild(tr);
             } else {
                  data.forEach(item => {
                     const tr = document.createElement('tr');
                     tr.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-700', 'transition-colors');
                     
-                    const addCell = (text, isLink = false, linkHref = '') => {
-                        const td = document.createElement('td');
-                        td.className = 'px-4 py-3 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300';
-                        if (isLink && hyperlinksEnabled) {
-                            const link = document.createElement('a');
-                            link.href = linkHref;
-                            link.textContent = text;
-                            link.target = "_blank";
-                            link.classList.add('text-blue-600', 'dark:text-blue-400', 'hover:text-blue-800', 'dark:hover:text-blue-300', 'hover:underline');
-                            td.appendChild(link);
-                        } else {
-                            td.textContent = text;
-                        }
-                        // For subject column, allow word break
-                        if (text === item.subject) { // A bit of a hack to identify subject cell
-                             td.classList.remove('whitespace-nowrap');
-                             td.classList.add('subject-column');
-                        }
-                        tr.appendChild(td);
-                    };
-
-                    if (settings.showCreationDate) addCell(item.creationDate);
-                    addCell(item.id, true, CASE_URL_PREFIX + item.id); // Case ID is always linkable if enabled
-                    if (settings.showStatus) addCell(item.status);
-                    if (settings.showEmail) addCell(item.email);
-                    addCell(item.subject); // Subject cell
+                    const tdId = document.createElement('td');
+                    tdId.className = 'px-4 py-3 whitespace-nowrap text-sm text-slate-700 dark:text-slate-300';
+                    if (hyperlinksEnabled) {
+                        const link = document.createElement('a');
+                        link.href = CASE_URL_PREFIX + item.id;
+                        link.textContent = item.id;
+                        link.target = "_blank";
+                        link.classList.add('text-blue-600', 'dark:text-blue-400', 'hover:text-blue-800', 'dark:hover:text-blue-300', 'hover:underline');
+                        tdId.appendChild(link);
+                    } else {
+                        tdId.textContent = item.id;
+                    }
                     
+                    const tdSubject = document.createElement('td');
+                    tdSubject.className = 'px-4 py-3 text-sm text-slate-700 dark:text-slate-300 subject-column';
+                    tdSubject.textContent = item.subject;
+                    
+                    tr.appendChild(tdId);
+                    tr.appendChild(tdSubject);
                     resultsTableBody.appendChild(tr);
                 });
             }
-            updateRowCount(data.length, allParsedData.length, isFiltered);
+            updateRowCount(data.length, allParsedData.length);
         }
-
-        function updateRowCount(displayedCount, totalParsedCount, isFiltered) {
-            if (totalParsedCount === 0 && !rawDataInput.value.trim()) {
-                 rowCountDisplay.textContent = ''; 
+        
+        function updateRowCount(displayedCount, totalParsedCount) {
+            if (!rawDataInput.value.trim() && totalParsedCount === 0) {
+                 rowCountDisplay.textContent = '';
                  return;
             }
+
+            let baseTotalForMessage = allParsedData.length; // Total after autoFilterKeywords and before subject/searchbox filter
+
+            // If subject dropdown is active, the "of X" should be based on that filtered subset
+            if (filterSubjectDropdown.value) {
+                baseTotalForMessage = allParsedData.filter(item => item.subject === filterSubjectDropdown.value).length;
+            }
             
-            const activeFilters = autoFilterKeywords.length > 0 || filterSubjectDropdown.value || searchTableInput.value.trim();
-            if (activeFilters && displayedCount !== totalParsedCount) {
-                 rowCountDisplay.textContent = `Displaying ${displayedCount} of ${totalParsedCount} cases.`;
-            } else {
+            if (searchTableInput.value.trim() && displayedCount !== baseTotalForMessage) {
+                 rowCountDisplay.textContent = `Displaying ${displayedCount} of ${baseTotalForMessage} cases. (Total unique parsed: ${allParsedData.length})`;
+            } else if (displayedCount !== allParsedData.length && (autoFilterKeywords.length > 0 || filterSubjectDropdown.value)) {
+                 rowCountDisplay.textContent = `Displaying ${displayedCount} of ${allParsedData.length} cases.`;
+            }
+            else {
                  rowCountDisplay.textContent = `Displaying ${displayedCount} cases.`;
             }
         }
@@ -576,21 +465,13 @@
             const idsToCopy = [];
             const rows = resultsTableBody.querySelectorAll('tr');
             rows.forEach(row => {
-                // Find the cell corresponding to Case ID based on current column settings
-                let idCellIndex = 0;
-                if (settings.showCreationDate) idCellIndex++;
-                
-                const idCell = row.cells[idCellIndex];
-
+                const idCell = row.querySelector('td:first-child');
                 if (idCell) {
                     const link = idCell.querySelector('a');
                     if (link) {
                         idsToCopy.push(link.textContent);
                     } else {
-                         // Check if the cell itself has text content (if hyperlinks are off)
-                        if (idCell.textContent.trim() !== '') {
-                            idsToCopy.push(idCell.textContent);
-                        }
+                        idsToCopy.push(idCell.textContent);
                     }
                 }
             });
@@ -612,7 +493,7 @@
                 }
                 document.body.removeChild(textArea);
             } else {
-                showToast('No Case IDs to copy from the current view.');
+                showToast('No Case IDs to copy.');
             }
         });
 
@@ -627,33 +508,33 @@
             }
             const linksToOpen = [];
             const rows = resultsTableBody.querySelectorAll('tr');
-             rows.forEach(row => {
-                let idCellIndex = 0;
-                if (settings.showCreationDate) idCellIndex++;
-                const idCell = row.cells[idCellIndex];
-                if (idCell) {
-                    const linkElement = idCell.querySelector('a');
-                    if (linkElement && linkElement.href) {
-                         linksToOpen.push(linkElement.href);
-                    }
+            rows.forEach(row => {
+                const idLink = row.querySelector('td:first-child a'); 
+                if (idLink && idLink.href) {
+                    linksToOpen.push(idLink.href);
                 }
             });
-
 
             if (linksToOpen.length > 0) {
                 let count = 0;
                 linksToOpen.forEach((url, index) => {
                     setTimeout(() => {
-                        window.open(url, '_blank');
-                        count++;
-                        if (count === linksToOpen.length) {
-                             showToast(`Attempted to open ${count} case(s). Check browser pop-up settings.`);
+                        const newTab = window.open(url, '_blank');
+                        if (newTab) {
+                            count++;
+                        }
+                        if (index === linksToOpen.length - 1) { // Check on the last attempt
+                             if (count > 0) {
+                                showToast(`Attempted to open ${count} case(s). Check browser pop-up settings if some didn't open.`);
+                            } else if (linksToOpen.length > 0) { // If attempted but all failed
+                                showToast(`Could not open cases. Please check your browser's pop-up blocker settings.`);
+                            }
                         }
                     }, index * 150); // Slightly increased delay
                 });
-                 if (linksToOpen.length === 0 && allParsedData.length > 0) { // This condition might be redundant now
-                    showToast("No hyperlinked Case IDs currently displayed to open.");
-                }
+                 if (linksToOpen.length === 0 && displayedData.length > 0 ) { // Typo, should be current displayed data
+                     showToast("No hyperlinked Case IDs currently displayed to open.");
+                 }
             } else {
                 showToast('No displayed Case IDs to open.');
             }
@@ -666,8 +547,7 @@
         searchTableInput.addEventListener('input', filterTableForDisplay);
 
         // Initial call
-        renderTableStructure(); // Setup initial table headers
-        parseAndDisplayData();  // Process any initial data (e.g. from browser refresh with form data)
+        parseAndDisplayData();
         renderKeywords();
 
     </script>
